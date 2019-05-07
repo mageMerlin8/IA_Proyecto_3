@@ -14,7 +14,7 @@ crea_areas:-
 
 crea_agentes:-
   crea_N_personas_p(10),!,
-  findall(X,persona(X,_,_,_,_,_),Folios),
+  findall(X,persona(X,_,_,_,_,_,_),Folios),
   asigna_areas_rec_personas(Folios),
   crea_moyotes_en_lugares_aleatorios(500,0.5).
 
