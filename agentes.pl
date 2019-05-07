@@ -9,8 +9,9 @@
   agua_var_unsafe/2,
   folio_agua_var/1,
 
-  persona/6,
+  persona/7,
   persona_area/2,
+  persona_area_recreativa/2,
   folio_persona/1,
 
   moyote/4,
@@ -21,7 +22,7 @@
 
   infeccion_moyote/3,
   infeccion_persona/7.
-  
+
 % Area(folio,constanteDeEcharcamiento)
 crea_area(Folio,Const):-
   assert(area(Folio,Const)).
@@ -32,12 +33,12 @@ crea_area(Folio,Const):-
                       que es una grafica sin direccion.
 */
 asigna_vecinos([[X,Y]|Vecinos]):-
-  assert(areas_vecinas(X,Y)),
+  asserta(areas_vecinas(X,Y)),
   asigna_vecinos(Vecinos).
 asigna_vecinos([]).
 % Hacemos el hecho de vecinididad conmutativo:
 areas_vecinas(X,Y):-
-  areas_vecinas(Y,X).
+  areas_vecinas(Y,X),!.
 
 /*
  agua_const(folio,folioArea) :- vamos a considerar que estas fuentes tienen
@@ -53,7 +54,7 @@ areas_vecinas(X,Y):-
 */
 crea_agua_const(FolioA):-
   findall(X,agua_const(X,_),Ls),
-  Ls =\= [],
+  \+(Ls = []),
   max_list(Ls, F),
   Folio is F+1,
   assert(agua_const(Folio,FolioA)).
@@ -75,7 +76,7 @@ escribe_agua_var(Folio):-
 
 
 crea_agua_var(FolioA,Tipo,CapH,P_Vaciado):-
-  folio_agua_var(F),
+  folio_agua_var(F),!,
   Folio is F+1,
   retractall(folio_agua_var(_)),
   assert(folio_agua_var(Folio)),
@@ -112,45 +113,78 @@ make_water_safe(Folio):-
   retractall(agua_var_unsafe(Folio)).
 
 /*
-persona(folio,area_hogar,area_trabajo,hora_entrada,hora_salida,hospitalizado?).
+persona(folio,
+        area_hogar,
+        area_trabajo,
+        hora_entrada,
+        hora_salida,
+        hospitalizado?,
+        fecha_muerte).
+
 
 persona_area(folioP,folioA)
+persona_area_recreativa(Persona,Area)
 
 */
 crea_persona(A_H,A_T,H_E,H_S):-
-  folio_persona(F),
+  folio_persona(F),!,
   Folio is F + 1,
   retractall(folio_persona(_)),
   assert(folio_persona(Folio)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,false)),
+  assert(persona(Folio,A_H,A_T,H_E,H_S,false,null)),
   assert(persona_area(Folio,A_H)).
 
 crea_persona(A_H,A_T,H_E,H_S):-
   Folio is 0,
   assert(folio_persona(Folio)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,false)),
+  assert(persona(Folio,A_H,A_T,H_E,H_S,false,null)),
   assert(persona_area(Folio,A_H)).
 
-crea_persona_empleo_normal(A_H.A_T):-
+crea_persona_empleo_normal(A_H,A_T):-
   crea_persona(A_H,A_T,9,17).
 
 mover_persona(Persona,Target):-
   retractall(persona_area(Persona,_)),
   assert(persona_area(Persona,Target)).
 
-matar_persona(Folio):-
-  retractall(persona(Folio,_,_,_,_,_)),
-  retractall(persona_area(Folio,_)),
-  retractall(infeccion_persona(Folio,_,_,_,_,_,_)).
+matar_persona(Folio,Fecha):-
+  % retractall(infeccion_persona(Folio,_,_,_,_,_,_)).
+
+  persona(Folio,A_H,A_T,H_E,H_S,Hops,null),!,
+  retractall(persona(Folio,_,_,_,_,_,_)),
+  assert(persona(Folio,A_H,A_T,H_E,H_S,Hops,Fecha)),
+  retractall(persona_area(Folio,_)).
+matar_persona(Folio,_):-
+  write('no se pudo matar a la persona #'),write(Folio).
+
 
 hospitalizar_persona(Folio):-
   persona(Folio,A_H,A_T,H_E,H_S,_),
   retractall(persona(Folio,_,_,_,_,_)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,true)).
+  assert(persona(Folio,A_H,A_T,H_E,H_S,true)),
+  retractall(persona_area(Folio,_)).
+
 deshospitalizar_persona(Folio):-
   persona(Folio,A_H,A_T,H_E,H_S,_),
   retractall(persona(Folio,_,_,_,_,_)),
   assert(persona(Folio,A_H,A_T,H_E,H_S,false)).
+
+cambiar_trabajo_persona(Folio,Area_trabajo,H_E,H_S):-
+  persona(Folio,A_H,_,_,_,Hosp),
+  retractall(persona(Folio,_,_,_,_,_)),
+  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp)).
+%cambia el area de trabajo sin cambiar el horario
+cambiar_trabajo_persona(Folio,Area_trabajo):-
+  persona(Folio,A_H,_,H_E,H_S,Hosp),
+  retractall(persona(Folio,_,_,_,_,_)),
+  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp)).
+
+agregar_area_rec_persona(FolioP,FolioA):-
+  persona_area_recreativa(FolioP,FolioA).
+agregar_area_rec_persona(FolioP,FolioA):-
+  assert(persona_area_recreativa(FolioP,FolioA)).
+quitar_area_rec_persona(FolioP,FolioA):-
+  retractall(persona_area_recreativa(FolioP,FolioA)).
 
 /*
 moyote(folio,
@@ -159,7 +193,7 @@ moyote(folio,
        ciclos_de_vida)
 */
 crea_moyote(Area,FechaN,Ciclos,Infeccion):-
-  folio_moyote(F),
+  folio_moyote(F),!,
   Folio is F+1,
   retractall(folio_moyote(_)),
   assert(folio_moyote(Folio)),
@@ -234,7 +268,7 @@ infeccion_persona(folioP,
                   fecha_i_sin,
                   fecha_f_sin)
 */
-crea_infeccion_persona(Persona,T,F1,F2,F3,F4,F5):-
-  assert(infeccion_persona(Persona,T,F1,F2,F3,F4,F5)).
+crea_infeccion_persona(Persona,T,F1,F2,F3,F4,F5,FolioArea):-
+  assert(infeccion_persona(Persona,T,F1,F2,F3,F4,F5,FolioArea)).
 destruye_infeccion_persona(Persona):-
   retractall(infeccion_persona(Persona,_,_,_,_,_,_)).
