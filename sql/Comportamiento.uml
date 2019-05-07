@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Diagram>
+  <ID>DATABASE</ID>
+  <OriginalElement>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</OriginalElement>
+  <nodes>
+    <node x="495.0" y="74.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area</node>
+    <node x="701.0" y="607.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_moyote</node>
+    <node x="768.0" y="291.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.c_moyote</node>
+    <node x="423.0" y="284.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area</node>
+    <node x="0.0" y="0.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona</node>
+    <node x="273.0" y="55.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</node>
+    <node x="461.0" y="588.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.tanque_moyote</node>
+    <node x="592.0" y="405.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote</node>
+  </nodes>
+  <notes />
+  <edges>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.c_moyote" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.tanque_moyote" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
+      <point x="0.0" y="6.673628050081476" />
+      <point x="-7.549176919625708" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_moyote" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona">
+      <point x="0.0" y="0.0" />
+      <point x="0.0" y="0.0" />
+    </edge>
+  </edges>
+  <settings layout="Organic" zoom="1.0" x="480.5" y="351.5" />
+  <SelectedNodes>
+    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</node>
+  </SelectedNodes>
+  <Categories>
+    <Category>Key columns</Category>
+    <Category>Columns</Category>
+  </Categories>
+</Diagram>
+
