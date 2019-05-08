@@ -14,7 +14,7 @@
   persona_area_recreativa/2,
   folio_persona/1,
 
-  moyote/4,
+  moyote/5,
   c_moyote/3,
   folio_moyote/1,
   bulto_huevos/6,
@@ -142,7 +142,8 @@ crea_persona(A_H,A_T,H_E,H_S):-
 
 crea_persona_empleo_normal(A_H,A_T):-
   crea_persona(A_H,A_T,9,17).
-
+mover_persona(Persona,Target):-
+  persona_area(Persona,Target),!.
 mover_persona(Persona,Target):-
   retractall(persona_area(Persona,_)),
   assert(persona_area(Persona,Target)).
