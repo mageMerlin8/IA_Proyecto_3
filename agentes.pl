@@ -21,7 +21,7 @@
   folio_bultos/1,
 
   infeccion_moyote/3,
-  infeccion_persona/7.
+  infeccion_persona/8.
 
 % Area(folio,constanteDeEcharcamiento)
 crea_area(Folio,Const):-

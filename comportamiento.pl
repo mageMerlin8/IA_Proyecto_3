@@ -1,10 +1,12 @@
 :-include(datos_prueba).
 main:-
   \+crea_mundo,
-  crea_el_tiempo.
+  crea_el_tiempo.%,
+  % guitracer.
 
 :- dynamic
-  ciclo_actual/1.
+  ciclo_actual/1,
+  panico/1.
 
 %%%%%%%%
 % UTIL %
@@ -34,100 +36,161 @@ persona_aleatoria_area(_,-1).
 % TIEMPO %
 %%%%%%%%%%
 crea_el_tiempo:-
-  assert(ciclo_actual(0)).
+  assert(ciclo_actual(0)),
+  assert(panico(false)).
 avanza_el_tiempo:-
   ciclo_actual(Pasado),
   Presente is Pasado + 1,
   retractall(ciclo_actual(_)),
   assert(ciclo_actual(Presente)).
-hora_dia_actual(Hora,Dia):-
+dia_hora_actual(Dia,Hora):-
   ciclo_actual(Presente),
   Hora is Presente mod 24,
   Dia is div(div(Presente,24),7).
+is_it_time_to_panic(true):-
+  findall(X,infeccion_persona_visible(X),Infecciones),
+  length(Infecciones,Num),
+  Threshold is 10,
+  Num > Threshold,!.
+is_it_time_to_panic(false).
+
+change_panic(Panic):-
+  panico(Panic),!.
+change_panic(Panic):-
+  retractall(panico(_)),
+  assert(panico(Panic)).
+
+ciclar_mundo_n_veces(N):-
+  N > 0,
+  ciclar_mundo,
+  M is N-1,
+  ciclar_mundo_n_veces(M).
+ciclar_mundo_n_veces(0).
 ciclar_mundo:-
-  hora_dia_actual(Hora,Dia),
+  dia_hora_actual(Dia,Hora),
+  ciclo_actual(Presente),
+  write('Ciclo #'),writeln(Presente),
+  writeln('------------------'),
   %ciclar entidades
   ciclar_todos_los_moyotes(Hora),
   ciclar_todas_las_personas(Dia,Hora),
   avanza_el_tiempo.
-
-
-
+ciclar_mundo_dia:-
+  is_it_time_to_panic(Panic),
+  change_panic(Panic),
+  ciclar_mundo_n_veces(24).
 %%%%%%%%%%%%
 % PERSONAS %
 %%%%%%%%%%%%
 
-decision_persona(Persona,_,_,aiuda_toy_hospitalizado):-
+decision_persona(Persona,_,_,_,_,aiuda_toy_hospitalizado):-
   %falta ver que hacemos con los hospitalizados
   %tambien hay que checar si ya hay sintomas pa ver si va al hospital o algo
   persona(Persona,_,_,_,_,true,null).
 
-decision_persona(Persona,Dia,Hora,go_home):-
+decision_persona(Dia,Hora,_,H_S,go_home):-
   Dia < 5,
-  %false y null para asegurarnos de que este fuera del hospital y vivo
-  persona(Persona,_,_,_,H_S,false,null),
-  Hora = H_S,!.
-decision_persona(Persona,Dia,Hora,go_work):-
+  Hora = H_S.
+decision_persona(Dia,Hora,H_E,_,go_work):-
   Dia < 5,
-  %false y null para asegurarnos de que este fuera del hospital y vivo
-  persona(Persona,_,_,H_E,_,false,null),
-  Hora = H_E,!.
-decision_persona(Persona,Dia,Hora,stay_work):-
+  Hora = H_E.
+decision_persona(Dia,Hora,H_E,H_S,stay_work):-
   Dia < 5,
-  %false y null para asegurarnos de que este fuera del hospital y vivo
-  persona(Persona,_,_,H_E,H_S,false,null),
   Hora > H_E,
-  Hora < H_S,!.
-decision_persona(Persona,Dia,Hora,home_for_the_day):-
-  (Dia < 5,!);
-  (Dia > 5, Hora > 22, Hora < 9),
-  %false y null para asegurarnos de que este fuera del hospital y vivo
-  persona(Persona,_,_,_,_,false,null),!.
-decision_persona(Persona,_,_,rec_time):-
-  persona(Persona,_,_,_,_,false,null).
+  Hora < H_S.
+decision_persona(Dia,Hora,H_E,H_S,home_for_the_day):-
+  (Dia < 5, Hora < H_E,!);
+  (Dia < 5, Hora > H_S,!);
+  (Dia > 5, Hora > 22, Hora < 9).
+decision_persona(_,_,_,_,rec_time).
 
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,go_home),!,
-  persona(Persona,A_H,_,_,_,false,null),
+% persona_actua(folio, a_h, a_t, h_e, h_s, hosp, Dia, Hora)
+% go_home
+persona_actua(Persona,A_H,_,_,H_S,false,Dia,Hora):-
+  decision_persona(Dia,Hora,_,H_S,go_home),!,
+  % write('Persona #'),write(Persona),writeln(' va a casa'),
   mover_persona(Persona,A_H).
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,home_for_the_day),!,
-  persona(Persona,A_H,_,_,_,false,null),
+% go_work
+persona_actua(Persona,_,A_T,H_E,_,false,Dia,Hora):-
+  decision_persona(Dia,Hora,H_E,_,go_work),!,
+  % write('Persona #'),write(Persona),writeln(' va a trabajar'),
+  mover_persona(Persona,A_T).
+% stay_work
+persona_actua(Persona,_,A_T,H_E,H_S,false,Dia,Hora):-
+  decision_persona(Dia,Hora,H_E,H_S,stay_work),!,
+  % write('Persona #'),write(Persona),writeln(' se queda en el trabajo'),
+  mover_persona(Persona,A_T).
+% home_for_the_day
+persona_actua(Persona,A_H,_,H_E,H_S,false,Dia,Hora):-
+  decision_persona(Dia,Hora,H_E,H_S,home_for_the_day),!,
+  % write('Persona #'),write(Persona),writeln(' se queda en casa'),
   mover_persona(Persona,A_H).
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,go_work),!,
-  persona(Persona,_,A_T,_,_,false,null),
-  mover_persona(Persona,A_T).
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,stay_work),!,
-  persona(Persona,_,A_T,_,_,false,null),
-  mover_persona(Persona,A_T).
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,rec_time),!,
-  findall(X,persona_area_recreativa(Persona,X),Areas),
-  length(Areas,Top),
+% rec_time
+persona_actua(Persona,A_H,A_T,H_E,H_S,false,Dia,Hora):-
+  decision_persona(Dia,Hora,H_E,H_S,rec_time),!,
+  % write('Persona #'),write(Persona),writeln(' se pasea'),
+
+  findall(X,persona_area_recreativa(Persona,X),A1),
+  length([A_H,A_T|A1],Top),
   numero_aleatorio_entre(0,Top,C),
   Choice is floor(C),
-  nth0(Choice,Areas,Area),
+  nth0(Choice,[A_H,A_T|A1],Area),
   mover_persona(Persona,Area).
-persona_actua(Persona,Dia,Hora):-
-  decision_persona(Persona,Dia,Hora,aiuda_toy_hospitalizado),!.
 
 ciclar_todas_las_personas(Dia,Hora):-
   findall(P,persona(P,_,_,_,_,_,null),Personitas),
   ciclar_personas(Personitas,Dia,Hora).
+ciclar_personas([],_,_).
 ciclar_personas([Persona|Personas],Dia,Hora):-
-  persona_actua(Persona,Dia,Hora),
+  persona(Persona,A_H,A_T,H_E,H_S,Hosp,null),!,
+  persona_actua(Persona,A_H,A_T,H_E,H_S,Hosp,Dia,Hora),
   ciclar_personas(Personas,Dia,Hora).
-
+ciclar_personas([_|Personas],Dia,Hora):-
+  ciclar_personas(Personas,Dia,Hora).
 % persona_cicla(Persona,Dia,Hora).
 
+persona_picadura_infectada(Persona,Sepa):-
+  %Chacar primero que no tenga infeccion activa
+  \+persona_infeccion_activa(Persona,_),
+  ciclo_actual(Fecha_Piquete),
+  %incubacion entre 5 y 7 dias o 120 y 168 horas
+  numero_aleatorio_entre(120,168,F2),
+  Fecha_Fin_Incubacion is Fecha_Piquete + floor(F2),
+  %contagioso hasta 4-5 dias o 96 y 120 horas dias despues de fin de incubacion
+  numero_aleatorio_entre(96,120,F3),
+  Fecha_Fin_Contagio is Fecha_Fin_Incubacion + floor(F3),
+  %sintomas se muestran a partir del segundo dia de ser contagioso
+  numero_aleatorio_entre(24,48,F4),
+  Fecha_Ini_Sintomas is Fecha_Fin_Incubacion + floor(F4),
+  Fecha_Fin_Sintomas is Fecha_Fin_Contagio,
+  %area donde se encuentra la persona
+  persona_area(Persona,Area_Picadura),
 
-
-% TODO: implementar persona_picadura_infectada(persona,infeccion).
-persona_picadura_infectada(_,_).
-% TODO: implementar persona_contagiosa(Target,Sepa). (Tiene que ver con el momento)
-persona_contagiosa(_,_):-false.
+  %se crea la infeccion
+  crea_infeccion_persona(Persona,
+                         Sepa,
+                         Fecha_Piquete,
+                         Fecha_Fin_Incubacion,
+                         Fecha_Fin_Contagio,
+                         Fecha_Ini_Sintomas,
+                         Fecha_Fin_Sintomas,
+                         Area_Picadura).
+infeccion_persona_visible(Folio):-
+  infeccion_persona(Folio,_,_,_,_,FechaIS,_,_),
+  ciclo_actual(Presente),
+  FechaIS =< Presente.
+persona_contagiosa(Persona,Sepa):-
+  infeccion_persona(Persona,Sepa,_,FechaFI,FechaFC,_,_,_),
+  ciclo_actual(Presente),
+  FechaFI =< Presente, Presente < FechaFC.
+persona_sintomatica(Persona):-
+  infeccion_persona(Persona,_,_,_,_,FechaIS,FechaFS,_),
+  ciclo_actual(Presente),
+  FechaIS =< Presente, Presente < FechaFS.
+persona_infeccion_activa(Persona,Sepa):-
+  infeccion_persona(Persona,Sepa,FechaP,_,FechaFC,_,_,_),
+  ciclo_actual(Presente),
+  FechaP =< Presente, Presente < FechaFC.
 %%%%%%%%%%%
 % MOYOTES %
 %%%%%%%%%%%
@@ -215,7 +278,8 @@ ciclo_moyote(Moyote,Hora):-
 
   %si no pude, intento comer
   ((moyote_intenta_picar(Moyote,Hora),!);
-  write('moyote #'),write(Moyote),writeln('intento picar pero no pudo')).
+    true %write('moyote #'),write(Moyote),writeln(' intento picar pero no pudo')
+  ).
 
 ciclar_moyotes([],_).
 ciclar_moyotes([Moyo|Moyots],Hora):-
