@@ -13,10 +13,10 @@ crea_areas:-
   asigna_vecinos([[Casas,Trabajos],[Trabajos,Rec],[Rec,Casas]]).
 
 crea_agentes:-
-  crea_N_personas_p(10),!,
+  crea_N_personas_p(100),!,
   findall(X,persona(X,_,_,_,_,_,_),Folios),
   asigna_areas_rec_personas(Folios),
-  crea_moyotes_en_lugares_aleatorios(500,0.5).
+  crea_moyotes_en_lugares_aleatorios(500,0.99).
 
 crea_N_personas_p(N):-
   N > 0,!,
