@@ -114,8 +114,10 @@
       <point x="0.0" y="94.0" />
     </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.3298429319371728" x="254.0" y="437.0" />
-  <SelectedNodes />
+  <settings layout="Hierarchic Group" zoom="0.831413612565445" x="794.0" y="437.0" />
+  <SelectedNodes>
+    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_const</node>
+  </SelectedNodes>
   <Categories>
     <Category>Key columns</Category>
     <Category>Columns</Category>
