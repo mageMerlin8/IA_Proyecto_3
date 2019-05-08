@@ -15,7 +15,7 @@
   folio_persona/1,
 
   moyote/4,
-  tanque_moyote/2,
+  c_moyote/3,
   folio_moyote/1,
   bulto_huevos/6,
   folio_bultos/1,
@@ -198,12 +198,12 @@ crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   retractall(folio_moyote(_)),
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
-  assert(tanque_moyote(Folio,0)).
+  assert(c_moyote(Folio,null,0)).
 crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   Folio is 0,
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
-  assert(tanque_moyote(Folio,0)).
+  assert(c_moyote(Folio,null,0)).
 
 crea_moyote_sano(Area,FechaN,Ciclos):-
   Infeccion is -1, % -1 representa un mosquito sano
@@ -212,13 +212,14 @@ crea_moyote_sano(Area,FechaN,Ciclos):-
 mata_moyote(Folio):-
   retractall(moyote(Folio,_,_,_,_)),
   retractall(infeccion_moyote(Folio)),
-  retractall(tanque_moyote(Folio)).
+  retractall(c_moyote(Folio,_,_)).
 
 llena_tanque_moyote(Folio,Cant):-
-  tanque_moyote(Folio,C1),
-  C2 is C1 + Cant,
-  retractall(tanque_moyote(Folio,_)),
-  assert(tanque_moyote(Folio,C2)).
+  c_moyote(Folio,Ciclos,C1),
+  % max y min son para que se quede en el intervalo: [0,1]
+  C2 is max(min(1,C1 + Cant),0),
+  retractall(c_moyote(Folio,_,_)),
+  assert(c_moyote(Folio,Ciclos,C2)).
 vacia_tanque_moyote(Folio,Cant):-
   Cant1 is -1 * Cant,
   llena_tanque_moyote(Folio,Cant1).
