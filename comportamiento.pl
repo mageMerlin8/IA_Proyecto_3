@@ -4,7 +4,7 @@ main:-
   crea_el_tiempo.%,
   % guitracer.
 
-:- dynamic
+:-dynamic
   ciclo_actual/1,
   panico/1.
 
@@ -17,10 +17,15 @@ numero_aleatorio_entre(A,B,Resp):-
   random(C),
   Diff is B-A,
   Resp is A + (Diff*C).
+% tira_moneda(chance_of_success)
 tira_moneda(P):-
   random(P1),
   P1<P,!;
   false.
+numero_mayor_o_igual_a_lista(Num,[N1|Ls]):-
+  N1 =< Num,
+  numero_mayor_o_igual_a_lista(Num,Ls).
+numero_mayor_o_igual_a_lista(_,[]).
 area_no_vacia(Area):-
   persona_area(_,Area),!.
 persona_aleatoria_area(Area,Personita):-
@@ -31,7 +36,21 @@ persona_aleatoria_area(Area,Personita):-
   Ti is floor(T),
   nth0(Ti,Personas,Personita).
 persona_aleatoria_area(_,-1).
-
+poblacion_inicial(Num):-
+  findall(Z,persona(Z,_,_,_,_,_,_),Pob),
+  length(Pob,Num).
+numero_muertos(Num):-
+  findall(X,persona_muerta(X),Muertas),
+  length(Muertas,Num).
+numero_muertes_dia(Num,Dia):-
+  Ciclo is Dia * 24,
+  findall(X,persona(X,_,_,_,_,_,Ciclo),Muertes),
+  Muertes = [],!,
+  Num is 0.
+numero_muertes_dia(Num,Dia):-
+  Ciclo is Dia * 24,
+  findall(X,persona(X,_,_,_,_,_,Ciclo),Muertes),
+  length(Muertes,Num).
 %%%%%%%%%%
 % TIEMPO %
 %%%%%%%%%%
@@ -48,9 +67,11 @@ dia_hora_actual(Dia,Hora):-
   Hora is Presente mod 24,
   Dia is div(div(Presente,24),7).
 is_it_time_to_panic(true):-
-  findall(X,infeccion_persona_visible(X),Infecciones),
-  length(Infecciones,Num),
-  Threshold is 10,
+  all_reasons_to_panic(Reasons),
+  length(Reasons,Num),
+  poblacion_inicial(Pob),
+  % 5% de la poblacion
+  Threshold is Pob*0.05,
   Num > Threshold,!.
 is_it_time_to_panic(false).
 
@@ -58,7 +79,7 @@ change_panic(Panic):-
   panico(Panic),!.
 change_panic(Panic):-
   retractall(panico(_)),
-  assert(panico(Panic)).
+  assert(panico(Panic)),!.
 
 ciclar_mundo_n_veces(N):-
   N > 0,
@@ -68,25 +89,111 @@ ciclar_mundo_n_veces(N):-
 ciclar_mundo_n_veces(0).
 ciclar_mundo:-
   dia_hora_actual(Dia,Hora),
-  ciclo_actual(Presente),
-  write('Ciclo #'),writeln(Presente),
-  writeln('------------------'),
+  % ciclo_actual(Presente),
+  % write('Ciclo #'),writeln(Presente),
+  % writeln('------------------'),
   %ciclar entidades
   ciclar_todos_los_moyotes(Hora),
   ciclar_todas_las_personas(Dia,Hora),
   avanza_el_tiempo.
 ciclar_mundo_dia:-
+  hospitalizar_personas_dia(NumHospitalizados),
+  matar_personas_dia,
+  ciclo_actual(Presente),
+  Dia is div(Presente, 24),
+  numero_muertes_dia(NumMuertes,Dia),
+
   is_it_time_to_panic(Panic),
   change_panic(Panic),
+
+  write('Dia #'),writeln(Dia),
+  writeln('------------------'),
+  write('Panico: '),writeln(Panic),
+  write('Hospitalizaciones hoy: '),writeln(NumHospitalizados),
+  write('Muertes hoy: '),writeln(NumMuertes),
+
   ciclar_mundo_n_veces(24).
+
+hospitalizar_personas_dia(NumAHospitalizar):-
+  panico(true),!,
+  personas_sintomaticas(Enfermitos),
+  separar_enfermos_hosp(Enfermitos,_,NoHosp),
+  length(NoHosp,NumEnf),
+  % porcentaje que va al hospital:
+  % numero_aleatorio_entre(0.60,0.80,P1),
+  numero_aleatorio_entre(0.70,0.90,P1),
+  NumAHospitalizar is floor(NumEnf * P1),
+  random_permutation(NoHosp,Enfermitos_permutados),
+  hospitalizar_primeros_n_enfermitos(Enfermitos_permutados,NumAHospitalizar).
+hospitalizar_personas_dia(NumAHospitalizar):-
+  panico(false),
+  personas_sintomaticas(Enfermitos),
+  separar_enfermos_hosp(Enfermitos,_,NoHosp),
+  length(NoHosp,NumEnf),
+  % porcentaje que va al hospital:
+  % numero_aleatorio_entre(0.01,0.02,P1),
+  P1 is 0.5,
+  NumAHospitalizar is floor(NumEnf * P1),
+  random_permutation(NoHosp,Enfermitos_permutados),
+  hospitalizar_primeros_n_enfermitos(Enfermitos_permutados,NumAHospitalizar).
+hospitalizar_primeros_n_enfermitos(_,0):-!.
+hospitalizar_primeros_n_enfermitos([Hospitalizado|Enfermitos],N):-
+  hospitalizar_persona(Hospitalizado),
+  M is N-1,
+  hospitalizar_primeros_n_enfermitos(Enfermitos,M).
+matar_personas_dia:-
+  personas_sintomaticas(Enfermitos),
+  separar_enfermos_hosp(Enfermitos,Hospitalizados,NoHospitalizados),
+  intenta_matar_hosp(Hospitalizados),
+  intenta_matar_no_hosp(NoHospitalizados).
+intenta_matar_hosp([]).
+intenta_matar_hosp([Enf1|Enfermos]):-
+  findall(Tipo,infeccion_persona(Enf1,Tipo,_,_,_,_,_,_),Infecciones),
+  length(Infecciones,1),!,
+  % una sepa es 0-10% o 0-5% mortandad
+  numero_aleatorio_entre(0,0.1,P),
+  ((tira_moneda(P),!,
+  ciclo_actual(Presente),
+  matar_persona(Enf1,Presente));
+  (true)),
+  intenta_matar_hosp(Enfermos).
+intenta_matar_hosp([Enf1|Enfermos]):-
+  % mas de una sepa => 40-60% mortalidad
+  numero_aleatorio_entre(0.4,0.6,P),
+  ((tira_moneda(P),!,
+  ciclo_actual(Presente),
+  matar_persona(Enf1,Presente));
+  (true)),
+  intenta_matar_no_hosp(Enfermos).
+intenta_matar_no_hosp([]).
+intenta_matar_no_hosp([Enf1|Enfermos]):-
+  findall(Tipo,infeccion_persona(Enf1,Tipo,_,_,_,_,_,_),Infecciones),
+  length(Infecciones,1),!,
+  % una sepa es 0-10% o 0-5% mortandad
+  numero_aleatorio_entre(0.1,0.3,P),
+  ((tira_moneda(P),!,
+  ciclo_actual(Presente),
+  matar_persona(Enf1,Presente));
+  (true)),
+  intenta_matar_no_hosp(Enfermos).
+intenta_matar_no_hosp([Enf1|Enfermos]):-
+  % mas de una sepa => 40-60% mortalidad
+  numero_aleatorio_entre(0.90,1,P),
+  ((tira_moneda(P),!,
+  ciclo_actual(Presente),
+  matar_persona(Enf1,Presente));
+  (true)),
+  intenta_matar_no_hosp(Enfermos).
+
+separar_enfermos_hosp([E1|Enfermos],[E1|Hosp],NoHosp):-
+  persona(E1,_,_,_,_,true,_),!,
+  separar_enfermos_hosp(Enfermos,Hosp,NoHosp).
+separar_enfermos_hosp([E1|Enfermos],Hosp,[E1|NoHosp]):-
+  separar_enfermos_hosp(Enfermos,Hosp,NoHosp).
+separar_enfermos_hosp([],[],[]).
 %%%%%%%%%%%%
 % PERSONAS %
 %%%%%%%%%%%%
-
-decision_persona(Persona,_,_,_,_,aiuda_toy_hospitalizado):-
-  %falta ver que hacemos con los hospitalizados
-  %tambien hay que checar si ya hay sintomas pa ver si va al hospital o algo
-  persona(Persona,_,_,_,_,true,null).
 
 decision_persona(Dia,Hora,_,H_S,go_home):-
   Dia < 5,
@@ -103,6 +210,13 @@ decision_persona(Dia,Hora,H_E,H_S,home_for_the_day):-
   (Dia < 5, Hora > H_S,!);
   (Dia > 5, Hora > 22, Hora < 9).
 decision_persona(_,_,_,_,rec_time).
+
+% persona_actua(folio, a_h, a_t, h_e, h_s, hosp, Dia, Hora)
+% decide salirse cuando se cura, no hace nada de otra manera
+persona_actua(Persona,_,_,_,_,true,_,_):-
+  persona_sana(Persona),!,
+  deshospitalizar_persona(Persona).
+persona_actua(_,_,_,_,_,true,_,_):-!.
 
 % persona_actua(folio, a_h, a_t, h_e, h_s, hosp, Dia, Hora)
 % go_home
@@ -147,7 +261,6 @@ ciclar_personas([Persona|Personas],Dia,Hora):-
   ciclar_personas(Personas,Dia,Hora).
 ciclar_personas([_|Personas],Dia,Hora):-
   ciclar_personas(Personas,Dia,Hora).
-% persona_cicla(Persona,Dia,Hora).
 
 persona_picadura_infectada(Persona,Sepa):-
   %Chacar primero que no tenga infeccion activa
@@ -175,22 +288,50 @@ persona_picadura_infectada(Persona,Sepa):-
                          Fecha_Ini_Sintomas,
                          Fecha_Fin_Sintomas,
                          Area_Picadura).
+all_reasons_to_panic(Reasons):-
+  findall(Z,reason_to_panic(Z),Reasons).
+  % findall(Z,hospitalizacion(Z),L1),
+  % findall(X,persona_muerta(X),L2).
+reason_to_panic(Persona):-
+  hospitalizacion(Persona).
+reason_to_panic(Persona):-
+  persona_muerta(Persona).
+infecciones_personas_visibles(Personas):-
+  findall(X,infeccion_persona_visible(X),Personas).
 infeccion_persona_visible(Folio):-
   infeccion_persona(Folio,_,_,_,_,FechaIS,_,_),
   ciclo_actual(Presente),
   FechaIS =< Presente.
+personas_contagiosas(Personas):-
+  findall(X,persona_contagiosa(X),Personas).
 persona_contagiosa(Persona,Sepa):-
   infeccion_persona(Persona,Sepa,_,FechaFI,FechaFC,_,_,_),
   ciclo_actual(Presente),
   FechaFI =< Presente, Presente < FechaFC.
+personas_sintomaticas(Personas):-
+  findall(X,persona_sintomatica(X),Personas).
 persona_sintomatica(Persona):-
   infeccion_persona(Persona,_,_,_,_,FechaIS,FechaFS,_),
+  persona(Persona,_,_,_,_,_,null),
   ciclo_actual(Presente),
   FechaIS =< Presente, Presente < FechaFS.
+personas_con_infeccion_activa(Personas):-
+  findall(X,persona_infeccion_activa(X),Personas).
 persona_infeccion_activa(Persona,Sepa):-
   infeccion_persona(Persona,Sepa,FechaP,_,FechaFC,_,_,_),
   ciclo_actual(Presente),
   FechaP =< Presente, Presente < FechaFC.
+personas_muertas(Personas):-
+  findall(Z,persona_muerta(Z),Personas).
+persona_muerta(Persona):-
+  persona(Persona,_,_,_,_,_,_),
+  \+persona(Persona,_,_,_,_,_,null).
+persona_sana(Persona):-
+  findall(Fsintomas,infeccion_persona(Persona,_,_,_,_,_,Fsintomas,_),Fechas),
+  ciclo_actual(Presente),
+  numero_mayor_o_igual_a_lista(Presente,Fechas).
+
+
 %%%%%%%%%%%
 % MOYOTES %
 %%%%%%%%%%%

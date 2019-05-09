@@ -76,7 +76,8 @@ create table folios
 	folio_persona INTEGER,
 	folio_moyote INTEGER,
 	folio_bultos INTEGER,
-	ciclo_actual INTEGER default 0
+	ciclo_actual INTEGER default 0,
+	hospitalizado integer
 );
 
 create table moyote

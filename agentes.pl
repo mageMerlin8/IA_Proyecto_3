@@ -11,6 +11,7 @@
 
   persona/7,
   persona_area/2,
+  hospitalizacion/1,
   persona_area_recreativa/2,
   folio_persona/1,
 
@@ -149,36 +150,39 @@ mover_persona(Persona,Target):-
   assert(persona_area(Persona,Target)).
 
 matar_persona(Folio,Fecha):-
-  % retractall(infeccion_persona(Folio,_,_,_,_,_,_)).
-
   persona(Folio,A_H,A_T,H_E,H_S,Hops,null),!,
   retractall(persona(Folio,_,_,_,_,_,_)),
   assert(persona(Folio,A_H,A_T,H_E,H_S,Hops,Fecha)),
   retractall(persona_area(Folio,_)).
 matar_persona(Folio,_):-
-  write('no se pudo matar a la persona #'),write(Folio).
+  write('no se pudo matar a la persona #'),writeln(Folio).
 
 
 hospitalizar_persona(Folio):-
-  persona(Folio,A_H,A_T,H_E,H_S,_),
-  retractall(persona(Folio,_,_,_,_,_)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,true)),
+  persona(Folio,A_H,A_T,H_E,H_S,_,null),!,
+  retractall(persona(Folio,_,_,_,_,_,_)),
+  assert(persona(Folio,A_H,A_T,H_E,H_S,true,null)),
+  assert(hospitalizacion(Folio)),
   retractall(persona_area(Folio,_)).
+hospitalizar_persona(Folio):-
+  write('Se intento hospitalizar persona invalida: '),writeln(Folio).
 
 deshospitalizar_persona(Folio):-
-  persona(Folio,A_H,A_T,H_E,H_S,_),
-  retractall(persona(Folio,_,_,_,_,_)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,false)).
+  persona(Folio,A_H,A_T,H_E,H_S,_,null),!,
+  retractall(persona(Folio,_,_,_,_,_,_)),
+  assert(persona(Folio,A_H,A_T,H_E,H_S,false,null)).
+deshospitalizar_persona(Folio):-
+  write('Se intento deshospitalizar persona invalida: '),writeln(Folio).
 
 cambiar_trabajo_persona(Folio,Area_trabajo,H_E,H_S):-
-  persona(Folio,A_H,_,_,_,Hosp),
-  retractall(persona(Folio,_,_,_,_,_)),
-  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp)).
+  persona(Folio,A_H,_,_,_,Hosp,F),
+  retractall(persona(Folio,_,_,_,_,_,_)),
+  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp,F)).
 %cambia el area de trabajo sin cambiar el horario
 cambiar_trabajo_persona(Folio,Area_trabajo):-
-  persona(Folio,A_H,_,H_E,H_S,Hosp),
-  retractall(persona(Folio,_,_,_,_,_)),
-  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp)).
+  persona(Folio,A_H,_,H_E,H_S,Hosp,F),
+  retractall(persona(Folio,_,_,_,_,_,_)),
+  assert(persona(Folio,A_H,Area_trabajo,H_E,H_S,Hosp,F)).
 
 agregar_area_rec_persona(FolioP,FolioA):-
   persona_area_recreativa(FolioP,FolioA).
