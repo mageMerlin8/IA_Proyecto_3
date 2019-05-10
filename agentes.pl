@@ -599,7 +599,6 @@ metricas_defuncionesXarea(X):-
   write('Nota: una persona puede haber fallecido por mas de una serotipo').
 
   reporte_diario:-
-    write('Reporte dia '), write(Date),nl,
     findall(Folio,persona(Folio,_,_,_,_,_,null),P),
     tam_lista(P,TP),
     write('Numero de habitantes: '), write(TP),nl,
@@ -607,4 +606,5 @@ metricas_defuncionesXarea(X):-
     PD is 100 / ((TP/TD)+1)
     write('Numero de defunciones: '), write(TD),
     write(' ('), write(PD), write('%)'), nl,
+    findall(Folio2,moyote(_,_,_,_,_),LM),
     .
