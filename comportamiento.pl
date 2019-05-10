@@ -104,6 +104,7 @@ ciclar_mundo:-
 ciclar_mundo_dia:-
   avanza_embarazamiento_de_moyotes_dia,
   ciclar_todos_los_huevos_dia,
+  ciclo_del_agua_dia,
   hospitalizar_personas_dia(NumHospitalizados),
   matar_personas_dia,
   ciclo_actual(Presente),
@@ -525,6 +526,72 @@ ciclar_muchos_huevos([]).
 ciclar_muchos_huevos([Huevos|MasHuevos]):-
   ciclar_huevos_dia(Huevos),
   ciclar_muchos_huevos(MasHuevos).
+
+%%%%%%%
+% AWA %
+%%%%%%%
+%LLOVER CADA DIA Y VACIAR CHARCOS
+ciclo_del_agua_dia:-
+  vaciar_charcos_dia,
+  llover_dia.
+llover_dia:-
+  tira_moneda(0.5),!,
+  findall(A,area(A,_),Areas),length(Areas,L),
+  numero_aleatorio_entre(0,L,L1),N is floor(L1),
+  nth0(N,Areas,AreaLluvia),
+  numero_aleatorio_entre(0,4,L2),N1 is floor(L2),
+  llover_area(AreaLluvia,N1).
+llover_dia:-
+  write('no llovio').
+vaciar_charcos_dia:-
+  findall(Z,charco_con_agua(Z),Charcos),
+  quita_agua_muchos_charcos_dia(Charcos).
+charco_con_agua(Charco):-
+  cant_agua_var(Charco,Cant),
+  Cant>0.
+quita_agua_muchos_charcos_dia([]):-!.
+quita_agua_muchos_charcos_dia([Charco|Charcos]):-
+  quita_agua_charco_dia(Charco),
+  quita_agua_muchos_charcos_dia(Charcos).
+quita_agua_charco_dia(Charco):-
+  agua_var(Charco,_,_,P),
+  vacia_agua_var(Charco,P).
+
+llover_area(Area,Lluvia):-
+  findall(X,agua_var(X,Area,_,_),Charcos),
+  llena_muchos_charcos_por_lluvia(Charcos,Lluvia).
+llena_muchos_charcos_por_lluvia([],_):-!.
+llena_muchos_charcos_por_lluvia([Charco|Charcos],L):-
+  llena_charco_lluvia(Charco,L),
+  llena_muchos_charcos_por_lluvia(Charcos,L).
+llena_charco_lluvia(Charco,3):-
+  numero_aleatorio_entre(0.7,1,P),!,
+  llena_agua_var(Charco,P).
+llena_charco_lluvia(Charco,2):-
+  numero_aleatorio_entre(0.5,0.7,P),!,
+  llena_agua_var(Charco,P).
+llena_charco_lluvia(Charco,1):-
+  numero_aleatorio_entre(0.3,0.5,P),!,
+  llena_agua_var(Charco,P).
+llena_charco_lluvia(Charco,0):-
+  numero_aleatorio_entre(0,0.3,P),!,
+  llena_agua_var(Charco,P).
+haz_llover(_,0):-!.
+haz_llover(Area,Lluvia):-
+  llover_area(Area,Lluvia),
+  findall(X,areas_vecinas(X,Area),Vecinos),
+  llover_vecinos(Vecinos,Lluvia).
+llover_vecinos([],_):-!.
+llover_vecinos([V1|Vecinos],Lluvia):-
+  % L1 is Lluvia+1,
+  % numero_aleatorio_entre(0,L1,N),L2 is floor(N),
+  L2 is Lluvia-1,
+  haz_llover(V1,L2),
+  llover_vecinos(Vecinos,Lluvia).
+
+
+
+
   hora(0).
   hora(1).
   hora(2).
