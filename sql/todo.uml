@@ -14,7 +14,7 @@
     <node x="785.0" y="664.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa</node>
     <node x="801.0" y="188.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.cant_agua_var</node>
     <node x="763.0" y="550.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area</node>
-    <node x="1140.0" y="0.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
+    <node x="80.01190476190504" y="161.72023809523807">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
     <node x="308.0" y="458.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas</node>
   </nodes>
   <notes />
@@ -72,9 +72,9 @@
       <point x="0.0" y="0.0" />
     </edge>
   </edges>
-  <settings layout="Organic" zoom="0.6245353159851302" x="662.4999999999999" y="634.5" />
+  <settings layout="Organic" zoom="0.6764934057408845" x="547.5" y="634.5" />
   <SelectedNodes>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas</node>
+    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
   </SelectedNodes>
   <Categories>
     <Category>Key columns</Category>

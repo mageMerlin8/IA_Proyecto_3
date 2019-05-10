@@ -191,9 +191,9 @@ metricas_areas(_):-!.
 
 datos_area(X):-
   write('DATOS DEL AREA'), nl,
-  cant_habXarea(X,residencia,LsR,R),
-  cant_habXarea(X,trabajo,LsT,T),
-  cant_habXarea(X,recreacion,LsD,D),
+  cant_habXarea(X,residencia,_LsR,R),
+  cant_habXarea(X,trabajo,_LsT,T),
+  cant_habXarea(X,recreacion,_LsD,D),
   mayorClave(['RESIDENCIAL','LABORAL','RECREATIVA'],[R,T,D],Tipo,_),
   write('Es principalmente '), write(Tipo),nl,
   write('Residentes del area: '), write(R),nl,
@@ -263,10 +263,10 @@ metricas_infectadosXarea(X):-
   tam_lista(I2,T2),
   tam_lista(I3,T3),
   tam_lista(I4,T4),
-  write('   Serotipo 1: '), write(I1), nl,
-  write('   Serotipo 2: '), write(I2), nl,
-  write('   Serotipo 3: '), write(I3), nl,
-  write('   Serotipo 4: '), write(I4), nl,
+  write('   Serotipo 1: '), write(T1), nl,
+  write('   Serotipo 2: '), write(T2), nl,
+  write('   Serotipo 3: '), write(T3), nl,
+  write('   Serotipo 4: '), write(T4), nl,
   write('Nota: una persona puede haber tenido mas de un serotipo').
 
 metricas_defuncionesXarea(X):-
@@ -292,10 +292,10 @@ metricas_defuncionesXarea(X):-
   tam_lista(I2,T2),
   tam_lista(I3,T3),
   tam_lista(I4,T4),
-  write('   Serotipo 1: '), write(I1), nl,
-  write('   Serotipo 2: '), write(I2), nl,
-  write('   Serotipo 3: '), write(I3), nl,
-  write('   Serotipo 4: '), write(I4), nl,
+  write('   Serotipo 1: '), write(T1), nl,
+  write('   Serotipo 2: '), write(T2), nl,
+  write('   Serotipo 3: '), write(T3), nl,
+  write('   Serotipo 4: '), write(T4), nl,
   write('Nota: una persona puede haber fallecido por mas de una serotipo').
 
 reporte_diario:-
@@ -322,12 +322,12 @@ reporte_diario:-
   write('Sepa de mayor contagio: '),write(PeorSepa),
   write(' ('), write(PSepa), write('%)'), nl,
 
-  findall(Folio2,moyote(_,_,_,_,_),LM),
-  findal(Folio3,moyote(_,_,_,_,-1),LMSanos),
-  tam_lista(Lm,TM),
+  findall(Folio2,moyote(Folio2,_,_,_,_),LM),
+  findal(Folio3,moyote(Folio3,_,_,_,-1),LMSanos),
+  tam_lista(LM,TM),
   tam_lista(LMSanos, TMS),
   TMEnf is TM - TMS,
   PEnf is TMEnf *100/TM,
   write('Poblacion de mosquitos: '), write(TM),nl,
-  write('Mosquitos infectados: '), write(TMenf),
-  write(' ('), write(Penf),write('%)'), nl.
+  write('Mosquitos infectados: '), write(TMEnf),
+  write(' ('), write(PEnf),write('%)'), nl.
