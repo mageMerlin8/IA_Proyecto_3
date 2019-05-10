@@ -2,11 +2,9 @@
 :-dynamic
   area/2,
   areas_vecinas/2,
-  agua_const/2,
 
-  agua_var/5,
+  agua_var/4,
   cant_agua_var/2,
-  agua_var_unsafe/2,
   folio_agua_var/1,
 
   persona/7,
@@ -18,7 +16,7 @@
   moyote/5,
   c_moyote/3,
   folio_moyote/1,
-  bulto_huevos/6,
+  bulto_huevos/5,
   folio_bultos/1,
 
   infeccion_moyote/3,
@@ -42,77 +40,44 @@ areas_vecinas(X,Y):-
   areas_vecinas(Y,X),!.
 
 /*
- agua_const(folio,folioArea) :- vamos a considerar que estas fuentes tienen
-                        capacidad infinita de huevos ya que son permanentes
-                        (tienen mucha agua)
-*/
-/*
  agua_var(folio,folioArea,tipo(art/nat),capacidadHuevos,%vaciado)
 
  cant_agua_var(folioAgua,cant(%))
  //para tipo art(artificial)
  agua_var_unsafe(folioAgua)
 */
-crea_agua_const(FolioA):-
-  findall(X,agua_const(X,_),Ls),
-  \+(Ls = []),
-  max_list(Ls, F),
-  Folio is F+1,
-  assert(agua_const(Folio,FolioA)).
-crea_agua_const(FolioA):-
-  Folio is 0,
-  assert(agua_const(Folio,FolioA)).
-
-escribe_agua_var(Folio):-
-  agua_var(Folio,FolioA,Tipo,CapH,P_Vaciado),
-  cant_agua_var(Folio,Cant),
-
-  write('Agua Variable # '),writeln(Folio),
-  write('Area: '),writeln(FolioA),
-  write('Tipo: '),writeln(Tipo),
-  write('Cantidad Agua: '),write(Cant),writeln('%'),
-  write('Taza de perdida: '),write(P_Vaciado),writeln('%'),
-  % Poner tambien numero total de huevos aqui
-  write('CapHuevos: '),writeln(CapH).
-
-
-crea_agua_var(FolioA,Tipo,CapH,P_Vaciado):-
+crea_agua_var(FolioA,CapH,P_Vaciado):-
   folio_agua_var(F),!,
   Folio is F+1,
   retractall(folio_agua_var(_)),
   assert(folio_agua_var(Folio)),
-  assert(agua_var(Folio,FolioA,Tipo,CapH,P_Vaciado)),
+  assert(agua_var(Folio,FolioA,CapH,P_Vaciado)),
   % le damos un valor inicial de 0.1%(lleno) al cuerpo de agua para modificar despues
   assert(cant_agua_var(Folio,0.1)).
-crea_agua_var(FolioA,Tipo,CapH,P_Vaciado):-
+crea_agua_var(FolioA,CapH,P_Vaciado):-
   Folio is 0,
   assert(folio_agua_var(0)),
-  assert(agua_var(Folio,FolioA,Tipo,CapH,P_Vaciado)),
-  assert(cant_agua_var(Folio,0.1)),
-  writeln('Agua variable creada:'),
-  escribe_agua_var(Folio).
+  assert(agua_var(Folio,FolioA,CapH,P_Vaciado)),
+  assert(cant_agua_var(Folio,0.1)).
 
 elimina_agua_var(Folio):-
   retractall(cant_agua_var(Folio,_)),
-  retractall(agua_var(Folio,_,_,_,_)),
-  retractall(agua_var_unsafe(Folio)),
-  retractall(bulto_huevos(_,Folio,var,_,_,_)).
+  retractall(agua_var(Folio,_,_,_)),
+  retractall(bulto_huevos(_,Folio,_,_,_)).
+cupo_huevos_agua(Agua,Cupo):-
+  agua_var(Agua,_,Cap,_),
+  findall(Z,bulto_huevos(_,Agua,Z,_,_),Huevos),
+  sum_list(Huevos,Num_huevos),
+  Cupo is Cap - Num_huevos.
 
 llena_agua_var(Folio,P):-
   cant_agua_var(Folio,P_actual),
-  New is P_actual + P,
+  New is max(0,min(1,P_actual + P)),
   retractall(cant_agua_var(Folio,_)),
   assert(cant_agua_var(Folio,New)).
 vacia_agua_var(Folio,P):-
   P2 is -1*P,
   llena_agua_var(Folio,P2).
-make_water_unsafe(Folio):-
-  agua_var(Folio,_,art,_,_),
-  assert(agua_var_unsafe(Folio)).
-make_water_safe(Folio):-
-  agua_var(Folio,_,art,_,_),
-  retractall(agua_var_unsafe(Folio)).
-
 /*
 persona(folio,
         area_hogar,
@@ -203,22 +168,38 @@ crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   retractall(folio_moyote(_)),
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
-  assert(c_moyote(Folio,null,0)).
+  assert(c_moyote(Folio,-1,0)).
 crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   Folio is 0,
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
-  assert(c_moyote(Folio,null,0)).
-
+  assert(c_moyote(Folio,-1,0)).
+crea_moyote_auto(Area,FechaN,Infeccion):-
+  random(C),
+  Ciclos is 168 + floor(C*504),
+  crea_moyote(Area,FechaN,Ciclos,Infeccion).
 crea_moyote_sano(Area,FechaN,Ciclos):-
   Infeccion is -1, % -1 representa un mosquito sano
   crea_moyote(Area,FechaN,Ciclos,Infeccion).
-
+crea_n_moyotes_auto(Area,FechaN,Inf,N):-
+  N>0,
+  M is N-1,
+  crea_moyote_auto(Area,FechaN,Inf),
+  crea_n_moyotes_auto(Area,FechaN,Inf,M).
+crea_n_moyotes_auto(_,_,_,0).
 mata_moyote(Folio):-
   retractall(moyote(Folio,_,_,_,_)),
-  retractall(infeccion_moyote(Folio)),
+  retractall(infeccion_moyote(Folio,_,_)),
   retractall(c_moyote(Folio,_,_)).
-
+set_ciclos_hasta_parir_moyote(Folio,Ciclos):-
+  c_moyote(Folio,_,Tanque),
+  retractall(c_moyote(Folio,_,_)),
+  assert(c_moyote(Folio,Ciclos,Tanque)).
+baja_ciclos_hasta_parir_moyote(Folio,Ciclos):-
+  c_moyote(Folio,C1,Tanque),
+  New_ciclos is max(0,C1-Ciclos),
+  retractall(c_moyote(Folio,_,_)),
+  assert(c_moyote(Folio,New_ciclos,Tanque)).
 llena_tanque_moyote(Folio,Cant):-
   c_moyote(Folio,Ciclos,C1),
   % max y min son para que se quede en el intervalo: [0,1]
@@ -231,7 +212,7 @@ vacia_tanque_moyote(Folio,Cant):-
 
 infectar_moyote(Moyote,Tipo):-
   %para asegurarnos de no infectar moyotes mas de una vez
-  moyote(Moyote,Area,FechaN,Ciclos,-1),
+  moyote(Moyote,Area,FechaN,Ciclos,-1),!,
   retractall(moyote(Moyote,_,_,_,_)),
   assert(moyote(Moyote,Area,FechaN,Ciclos,Tipo)).
 
@@ -246,17 +227,31 @@ bulto_huevos(folio,
              ciclos_hasta_eclosion,
              tipo_infeccion)
 */
-crea_bulto_huevos(FolioAgua,TipoAgua,CantH,Ciclos,Inf):-
+crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
   folio_bultos(F),!,
   Folio is F+1,
   retractall(folio_bultos(_)),
   assert(folio_bultos(Folio)),
-  assert(bulto_huevos(Folio,FolioAgua,TipoAgua,CantH,Ciclos,Inf)).
-crea_bulto_huevos(FolioAgua,TipoAgua,CantH,Ciclos,Inf):-
+  assert(bulto_huevos(Folio,FolioAgua,CantH,Dias,Inf)).
+crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
   asserta(folio_bultos(0)),
-  crea_bulto_huevos(FolioAgua,TipoAgua,CantH,Ciclos,Inf).
+  crea_bulto_huevos(FolioAgua,CantH,Dias,Inf).
 destruye_bulto(Folio):-
-  retractall(bulto_huevos(Folio,_,_,_,_,_)).
+  retractall(bulto_huevos(Folio,_,_,_,_)).
+eclosiona_huevos(Huevos,Fecha):-
+  bulto_huevos(Huevos,Area,Cant,_,Inf),
+  %nace 40% de la poblacion
+  numero_aleatorio_entre(0.3,0.5,P),NumNuevos is floor(P*Cant),
+  %nace entre 1 y 10% enferma
+  numero_aleatorio_entre(0.01,0.1,P2),NumInf is floor(P2*NumNuevos),
+  NumSanos is Cant-NumInf,
+  crea_n_moyotes_auto(Area,Fecha,Inf,NumInf),
+  crea_n_moyotes_auto(Area,Fecha,-1,NumSanos).
+quita_dias_huevos(Huevos,Dias):-
+  bulto_huevos(Huevos,Agua,Cant,D1,Tipo),
+  D2 is max(0,D1-Dias),
+  retractall(bulto_huevos(Huevos,_,_,_,_)),
+  assert(bulto_huevos(Huevos,Agua,Cant,D2,Tipo)).
 
 /*
 infeccion_moyote(folioM,fecha_fin_incubacion,sepa)
