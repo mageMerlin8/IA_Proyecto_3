@@ -51,6 +51,11 @@ numero_muertes_dia(Num,Dia):-
   Ciclo is Dia * 24,
   findall(X,persona(X,_,_,_,_,_,Ciclo),Muertes),
   length(Muertes,Num).
+aguas_con_cupo_area(Area,Aguas):-
+  findall(X,agua_con_cupo_area(X,Area),Aguas).
+agua_con_cupo_area(Agua,Area):-
+  agua_var(Agua,Area,_,_),
+  cupo_huevos_agua(Agua,H),H>0.
 %%%%%%%%%%
 % TIEMPO %
 %%%%%%%%%%
@@ -97,6 +102,8 @@ ciclar_mundo:-
   ciclar_todas_las_personas(Dia,Hora),
   avanza_el_tiempo.
 ciclar_mundo_dia:-
+  avanza_embarazamiento_de_moyotes_dia,
+  ciclar_todos_los_huevos_dia,
   hospitalizar_personas_dia(NumHospitalizados),
   matar_personas_dia,
   ciclo_actual(Presente),
@@ -381,6 +388,16 @@ moyote_intenta_picar(Folio,Hora):-
   moyote_quiere_picar(Hora),
   moyote_pica(Folio,Hora).
 
+% TODO: implementar moyote_pica_infectado/2:
+% moyote_pica_infectado(folio,sepa).
+moyote_pica_infectado(Moyote,Infeccion):-
+  moyote_sano(Moyote),
+  ciclo_actual(Presente),
+  % 5-7 dias 120-168
+  numero_aleatorio_entre(120,168,T),TiempoIncInfeccion is floor(T),
+  FechaFin is Presente + TiempoIncInfeccion,
+  crea_infeccion_moyote(Moyote,FechaFin,Infeccion).
+
 moyote_pica(Folio,Hora):-
   moyote(Folio,Area,_,_,Infeccion),
   area_no_vacia(Area),
@@ -409,15 +426,48 @@ moyote_pica(Folio,Hora):-
     %se infecta una persona si es contagioso el moyote
     (persona_picadura_infectada(Target,Infeccion))
   ).
-% TODO: implementar moyote_pica_infectado/2:
-% moyote_pica_infectado(folio,sepa).
-moyote_pica_infectado(_,_).
+moyote_intenta_morir(Folio):-
+  moyote(Folio,_,F_nac,Ciclos_vida,_),
+  F_muerte is F_nac+Ciclos_vida,
+  ciclo_actual(Presente),
+  F_muerte =< Presente,
+  mata_moyote(Folio).
+moyte_intenta_parir(Moyote):-
+  moyote(Moyote,Area,_,_,Infeccion),
+  %areas
+  aguas_con_cupo_area(Area,Aguas),
+  length(Aguas,La),numero_aleatorio_entre(0,La,N),Ni is floor(N),
+  nth0(Ni,Aguas,Agua_huevos),
+  %huevos
+  numero_aleatorio_entre(150,250,N2),NumHuevos is floor(N2),
+  %dias
+  numero_aleatorio_entre(4,5,N3),Dias is ceil(N3),
+  crea_bulto_huevos(Agua_huevos,NumHuevos,Dias,Infeccion).
+
+%ver si me muero
+ciclo_moyote(Moyote,_):-
+  moyote_intenta_morir(Moyote),!.
+%toi incubando
+ciclo_moyote(Moyote,_):-
+  c_moyote(Moyote,Ciclos,_),
+  \+Ciclos = null,
+  Ciclos > 0,!.
+%intento parir
+ciclo_moyote(Moyote,_):-
+  c_moyote(Moyote,Ciclos,_),
+  \+Ciclos = null,
+  Ciclos is 0,
+  moyte_intenta_parir(Moyote),
+  !.
+%intento incubar
+ciclo_moyote(Moyote,_):-
+  c_moyote(Moyote,_,Tank),
+  Tank > 0.85,
+  numero_aleatorio_entre(4,5,N),
+  Ciclos is floor(N),
+  set_ciclos_hasta_parir_moyote(Moyote,Ciclos),!.
+%intento comer
 ciclo_moyote(Moyote,Hora):-
-  %ver si me muero
-
-  %intento poner huevos o los estoy 'incubando'
-
-  %si no pude, intento comer
   ((moyote_intenta_picar(Moyote,Hora),!);
     true %write('moyote #'),write(Moyote),writeln(' intento picar pero no pudo')
   ).
@@ -430,7 +480,18 @@ ciclar_moyotes([Moyo|Moyots],Hora):-
 ciclar_todos_los_moyotes(Hora):-
   findall(X,moyote(X,_,_,_,_),Moyots),
   ciclar_moyotes(Moyots,Hora).
+avanza_embarazamiento_de_moyotes_dia:-
+  findall(Z,avanza_embarazado_1_dia(Z),_).
+avanza_embarazado_1_dia(X):-
+  moyote_embarazado(X),
+  baja_ciclos_hasta_parir_moyote(X,1).
+moyote_embarazado(Moyote):-
+  c_moyote(Moyote,Dias,_),
+  Dias > 0.
 
+moyote_sano(Moyote):-
+  moyote(Moyote,_,_,_,-1),
+  \+infeccion_moyote(Moyote,_,_).
 % tendencia_picar_hora/3 es para probar que esté funcionando bien lo de arriba
 tendencia_picar_hora(_,0,0):-!.
 tendencia_picar_hora(Hora,N,Ten):-
@@ -442,6 +503,28 @@ tendencia_picar_hora(Hora,N,Ten):-
   M is N-1,!,
   tendencia_picar_hora(Hora,M,Ten).
 
+%%%%%%%%%%
+% HUEVOS %
+%%%%%%%%%%
+ciclar_todos_los_huevos_dia:-
+  findall(X,bulto_huevos(X,_,_,_,_),TodosLosHuevos),
+  ciclar_muchos_huevos(TodosLosHuevos).
+ciclar_huevos_dia(Huevos):-
+  bulto_huevos(Huevos,_,_,D,_),
+  D > 0,!,
+  quita_dias_huevos(Huevos,1).
+ciclar_huevos_dia(Huevos):-
+  bulto_huevos(Huevos,Agua,_,_,_),
+  cant_agua_var(Agua,CantA),CantA>0,!,
+  ciclo_actual(Presente),
+  eclosiona_huevos(Huevos,Presente).
+ciclar_huevos_dia(Huevos):-
+  bulto_huevos(Huevos,_,_,_,_),!,
+  destruye_bulto(Huevos).
+ciclar_muchos_huevos([]).
+ciclar_muchos_huevos([Huevos|MasHuevos]):-
+  ciclar_huevos_dia(Huevos),
+  ciclar_muchos_huevos(MasHuevos).
   hora(0).
   hora(1).
   hora(2).

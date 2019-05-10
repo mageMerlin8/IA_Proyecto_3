@@ -182,11 +182,11 @@ crea_moyote_sano(Area,FechaN,Ciclos):-
   Infeccion is -1, % -1 representa un mosquito sano
   crea_moyote(Area,FechaN,Ciclos,Infeccion).
 crea_n_moyotes_auto(Area,FechaN,Inf,N):-
-  N>0,
+  N>0,!,
   M is N-1,
   crea_moyote_auto(Area,FechaN,Inf),
   crea_n_moyotes_auto(Area,FechaN,Inf,M).
-crea_n_moyotes_auto(_,_,_,0).
+crea_n_moyotes_auto(_,_,_,0):-!.
 mata_moyote(Folio):-
   retractall(moyote(Folio,_,_,_,_)),
   retractall(infeccion_moyote(Folio,_,_)),
@@ -246,7 +246,8 @@ eclosiona_huevos(Huevos,Fecha):-
   numero_aleatorio_entre(0.01,0.1,P2),NumInf is floor(P2*NumNuevos),
   NumSanos is Cant-NumInf,
   crea_n_moyotes_auto(Area,Fecha,Inf,NumInf),
-  crea_n_moyotes_auto(Area,Fecha,-1,NumSanos).
+  crea_n_moyotes_auto(Area,Fecha,-1,NumSanos),
+  destruye_bulto(Huevos).
 quita_dias_huevos(Huevos,Dias):-
   bulto_huevos(Huevos,Agua,Cant,D1,Tipo),
   D2 is max(0,D1-Dias),
