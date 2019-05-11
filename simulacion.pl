@@ -12,9 +12,6 @@ main:-
 %%%%%%%%
 % UTIL %
 %%%%%%%%
-numero_muertos(Num):-
-  findall(X,persona_muerta(X),Muertas),
-  length(Muertas,Num).
 numero_muertes_dia(Num,Dia):-
   Ciclo is Dia * 24,
   findall(X,persona(X,_,_,_,_,_,Ciclo),Muertes),
@@ -81,6 +78,11 @@ ciclar_mundo:-
   ciclar_todos_los_moyotes(Hora),
   ciclar_todas_las_personas(Dia,Hora),
   avanza_el_tiempo.
+ciclar_mundo_muchos_dias(0):-!.
+ciclar_mundo_muchos_dias(N):-
+  ciclar_mundo_dia,
+  M is N-1,
+  ciclar_mundo_muchos_dias(M).
 ciclar_mundo_dia:-
   avanza_embarazamiento_de_moyotes_dia,
   ciclar_todos_los_huevos_dia,
@@ -94,14 +96,40 @@ ciclar_mundo_dia:-
   is_it_time_to_panic(Panic),
   change_panic(Panic),
 
+  % tell(user),
+  crea_nombre_archivo(Dia,0,NomFile),
+  tell(NomFile),
   write('Dia #'),writeln(Dia),
   writeln('------------------'),
   write('Panico: '),writeln(Panic),
   % write('Hospitalizaciones hoy: '),writeln(NumHospitalizados),
   % write('Muertes hoy: '),writeln(NumMuertes),
+  write('Reporte Diario: '),nl,
+  writeln('------------------'),
   reporte_diario,
+  write('Metricas Totales: '),nl,
+  writeln('------------------'),
+  metricas_totales,
+
+  write('Metricas Areas: '),nl,
+  writeln('------------------'),
+  metricas_areas,
+  told,
 
   ciclar_mundo_n_veces(24).
+crea_nombre_archivo(Dia,FolioSim,NomFile):-
+  atom_string(Dia,StrDia),
+  %root
+  atom_string('sim/',Sim),
+  %sim
+  atom_string(FolioSim,StrFolioSim),
+  atom_string('_',S1),
+
+  string_concat(Sim,StrFolioSim,S2),
+  string_concat(S2,S1,S3),
+
+  string_concat(S3,StrDia,File),
+  atom_string(NomFile,File).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 % COSAS DE TODOS LOS DIAS %

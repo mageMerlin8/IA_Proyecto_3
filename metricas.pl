@@ -19,12 +19,10 @@ mayorClave([_|B],[X|Y],S,N):-
 mayorClave([A|_],[X|_],A,X).
 
 fallecimientos(Ls,Cant):-
-  findall(Folio1,persona(Folio1,_,_,_,_,_,null),Ls1),
-  findall(Folio2,persona(Folio2,_,_,_,_,_,_),Ls2),
-  ord_subtract(Ls2,Ls1,Ls),
-  tam_lista(Ls,Cant).
+  findall(X,persona_muerta(X),Ls),
+  length(Ls,Cant).
 
-  abrirPareja([X,Y],X,Y).
+abrirPareja([X,Y],X,Y).
 
 
 % Contadores
@@ -45,6 +43,9 @@ personasXsepa(X,Y):-
   findall(F2,infeccion_persona(F2,X,_,_,_,_,_,_),Ls2),
   ord_intersect(Ls1,Ls2,Ls),
   tam_lista(Ls,Y).
+% personasXsepa(Sepa,NumPersonas):-
+%   findall(Persona,infeccion_persona(Persona,Sepa,_,_,_,_,_,_),Personas),
+%   length(Personas,NumPersonas).
 
 infectadosXsepa(X,Ls,Y):-
   findall(Folio,infeccion_persona(Folio,X,_,_,_,_,_,_),Ls),
@@ -104,11 +105,12 @@ metricas_personasXsepa:-
   write('   Con serotipo 2: '), write(D), nl,
   write('   Con serotipo 3: '), write(T), nl,
   write('   Con serotipo 4: '), write(C), nl,
-  write('Nota: una persona puede tener mas de 1 serotipo.').
+  write('Nota: una persona puede tener mas de 1 serotipo.'),nl.
 
 % No se dividio en varios metodos para evitar contar varias veces las mismas listas
 metricas_fallecidos:-
   fallecimientos(Lf,F),
+  F>0,!,
   write('Total de fallecimientos: '), write(F), nl,
   % metricas de fallecimientos de una unica sepa
   findall(Folio,infeccion_persona(Folio,1,_,_,_,_,_,_),Ls1),
@@ -171,23 +173,23 @@ metricas_fallecidos:-
   Ptot is UDTC * 100 / F,
   write('Porcentaje de fallecimientos por los 4 serotipos: '), write(Ptot),nl.
   % quiza valga agregar el area con mayor numero de fallecimientos
-
+metricas_fallecidos.
 metricas_areas:-
-  area(X,_),
-  metricas_areas(X).
+  findall(Z,area(Z,_),Areas),
+  metricas_muchas_areas(Areas).
+metricas_muchas_areas([]):-!.
+metricas_muchas_areas([A1|Areas]):-
+  metricas_una_area(A1),!,
+  metricas_muchas_areas(Areas).
 
-metricas_areas(X):-
-  write('INFORMACION DEL AREA '), write(X), nl,
-  datos_area(X),nl,
-  metricas_registroXarea(X),nl,
-  metricas_infectadosXarea(X), nl,
-  metricas_moyotesXArea(X),nl,
-  metricas_defuncionesXarea(X),nl,
-  Y is X - 1,
-  Y>0,
-  metricas_areas(Y).
-
-metricas_areas(_):-!.
+metricas_una_area(Area):-
+  write('INFORMACION DEL AREA '), write(Area), nl,
+  datos_area(Area),nl,
+  metricas_registroXarea(Area),nl,
+  metricas_infectadosXarea(Area), nl,
+  metricas_moyotesXArea(Area),nl,
+  metricas_defuncionesXarea(Area),nl,
+  writeln('fin de la info del area').
 
 datos_area(X):-
   write('DATOS DEL AREA'), nl,
@@ -209,7 +211,7 @@ metricas_moyotesXArea(X):-
   moyotesXarea(X,4,M4),
   Mtot is M0+M1+M2+M3+M4,
   write('Totales: '), write(Mtot), nl,
-  write('   Sanos: '), write(M0),
+  write('   Sanos: '), write(M0),nl,
   write('   Serotipo 1: '), write(M1), nl,
   write('   Serotipo 2: '), write(M2), nl,
   write('   Serotipo 3: '), write(M3), nl,
@@ -236,9 +238,9 @@ metricas_registroXarea(X):-
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
   write('   Serotipo 4: '), write(T4), nl,
-  write('Nota: una persona puede haber tenido mas de un serotipo'),
+  write('Nota: una persona puede haber tenido mas de un serotipo'),nl,
   write('Nota2: Incluye todos los infectados actuales y fallecidos,
-  es un registro acumulado del area').
+  es un registro acumulado del area'),nl.
 
 metricas_infectadosXarea(X):-
   write('INFECTADOS ACTUALES DEL AREA'), nl,
@@ -296,14 +298,18 @@ metricas_defuncionesXarea(X):-
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
   write('   Serotipo 4: '), write(T4), nl,
-  write('Nota: una persona puede haber fallecido por mas de una serotipo').
+  write('Nota: una persona puede haber fallecido por mas de una serotipo'),nl.
+
+numero_muertos(Num):-
+  findall(X,persona_muerta(X),Muertas),
+  length(Muertas,Num).
 
 reporte_diario:-
   findall(Folio,persona(Folio,_,_,_,_,_,null),P),
   tam_lista(P,TP),
   write('Numero de habitantes: '), write(TP),nl,
 
-  fallecimientos(_,TD),
+  numero_muertos(TD),
   % TPersonas is TD + TP,
   % PD is TD * 100 / TPersonas,
   write('Numero de defunciones: '), write(TD),nl,
@@ -330,5 +336,5 @@ reporte_diario:-
   TMEnf is TM - TMS,
   % PEnf is TMEnf *100/TM,
   write('Poblacion de mosquitos: '), write(TM),nl,
-  write('Mosquitos infectados: '), write(TMEnf).
+  write('Mosquitos infectados: '), write(TMEnf),nl.
   % write(' ('), write(PEnf),write('%)'), nl.

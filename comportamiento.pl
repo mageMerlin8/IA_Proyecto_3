@@ -379,8 +379,8 @@ llover_dia:-
   nth0(N,Areas,AreaLluvia),
   numero_aleatorio_entre(0,4,L2),N1 is floor(L2),
   llover_area(AreaLluvia,N1).
-llover_dia:-
-  write('no llovio').
+llover_dia.%:-
+  % write('no llovio').
 vaciar_charcos_dia:-
   findall(Z,charco_con_agua(Z),Charcos),
   quita_agua_muchos_charcos_dia(Charcos).
