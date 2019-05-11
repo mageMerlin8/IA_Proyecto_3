@@ -59,7 +59,10 @@ change_panic(Panic):-
   retractall(panico(_)),
   assert(panico(Panic)),!.
 
-
+b(0.740818220682).
+logistic_personas_concientes(Dias,P_personas_concientes):-
+  b(B),
+  P_personas_concientes is 1 / (1 + 8*(B**Dias)).
 %%%%%%%%%%
 % CICLOS %
 %%%%%%%%%%
@@ -82,11 +85,11 @@ ciclar_mundo_dia:-
   avanza_embarazamiento_de_moyotes_dia,
   ciclar_todos_los_huevos_dia,
   ciclo_del_agua_dia,
-  hospitalizar_personas_dia(NumHospitalizados),
+  hospitalizar_personas_dia(_NumHospitalizados),
   matar_personas_dia,
   ciclo_actual(Presente),
   Dia is div(Presente, 24),
-  numero_muertes_dia(NumMuertes,Dia),
+  numero_muertes_dia(_NumMuertes,Dia),
 
   is_it_time_to_panic(Panic),
   change_panic(Panic),
@@ -94,8 +97,9 @@ ciclar_mundo_dia:-
   write('Dia #'),writeln(Dia),
   writeln('------------------'),
   write('Panico: '),writeln(Panic),
-  write('Hospitalizaciones hoy: '),writeln(NumHospitalizados),
-  write('Muertes hoy: '),writeln(NumMuertes),
+  % write('Hospitalizaciones hoy: '),writeln(NumHospitalizados),
+  % write('Muertes hoy: '),writeln(NumMuertes),
+  reporte_diario,
 
   ciclar_mundo_n_veces(24).
 
@@ -180,3 +184,6 @@ separar_enfermos_hosp([E1|Enfermos],[E1|Hosp],NoHosp):-
 separar_enfermos_hosp([E1|Enfermos],Hosp,[E1|NoHosp]):-
   separar_enfermos_hosp(Enfermos,Hosp,NoHosp).
 separar_enfermos_hosp([],[],[]).
+
+
+:-main.

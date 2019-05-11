@@ -24,7 +24,7 @@ crea_agentes:-
   crea_N_personas_p(300),!,
   findall(X,persona(X,_,_,_,_,_,_),Folios),
   asigna_areas_rec_personas(Folios),
-  crea_moyotes_en_lugares_aleatorios(1000,0.99).
+  crea_moyotes_en_lugares_aleatorios(1000,0.9).
 
 crea_N_personas_p(N):-
   N > 0,!,

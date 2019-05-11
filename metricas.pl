@@ -4,17 +4,17 @@ Predicados para conseguir las métricas en un instante estático de la propagaci
 
 % Funciones Generales
 tam_lista([],X):-
-  X=0.
+  X is 0.
 
 tam_lista([_|Cola],Contador):-
   tam_lista(Cola,Acumulado),
-  Contador = Acumulado + 1.
+  Contador is Acumulado + 1.
 
 mayorClave([],[],-1,-1).
 
 mayorClave([_|B],[X|Y],S,N):-
   mayorClave(B,Y,S,N),
-  N>X.
+  N>X,!.
 
 mayorClave([A|_],[X|_],A,X).
 
@@ -304,30 +304,31 @@ reporte_diario:-
   write('Numero de habitantes: '), write(TP),nl,
 
   fallecimientos(_,TD),
-  PD is 100 / ((TP/TD)+1),
-  write('Numero de defunciones: '), write(TD),
-  write(' ('), write(PD), write('%)'), nl,
+  % TPersonas is TD + TP,
+  % PD is TD * 100 / TPersonas,
+  write('Numero de defunciones: '), write(TD),nl,
+  % write(' ('), write(PD), write('%)'), nl,
 
   personasXsepa(1,U),
   personasXsepa(2,D),
   personasXsepa(3,T),
   personasXsepa(4,C),
   TI is U + D + T + C,
-  PInf is TI * 100 / TP,
-  write('Numero de personas infectadas: '), write(TI),
-  write(' ('), write(PInf), write('%)'), nl,
+  % PInf is TI * 100 / TP,
+  write('Numero de personas infectadas: '), write(TI),nl,
+  % write(' ('), write(PInf), write('%)'), nl,
 
-  mayorClave([1,2,3,4],[U,D,T,C],PeorSepa, Cont),
-  PSepa = Cont * 100 / TI,
-  write('Sepa de mayor contagio: '),write(PeorSepa),
-  write(' ('), write(PSepa), write('%)'), nl,
+  mayorClave([1,2,3,4],[U,D,T,C],PeorSepa, _Cont),
+  % PSepa is Cont * 100 / TI,
+  write('Sepa de mayor contagio: '),write(PeorSepa),nl,
+  % write(' ('), write(PSepa), write('%)'), nl,
 
   findall(Folio2,moyote(Folio2,_,_,_,_),LM),
-  findal(Folio3,moyote(Folio3,_,_,_,-1),LMSanos),
+  findall(Folio3,moyote(Folio3,_,_,_,-1),LMSanos),
   tam_lista(LM,TM),
   tam_lista(LMSanos, TMS),
   TMEnf is TM - TMS,
-  PEnf is TMEnf *100/TM,
+  % PEnf is TMEnf *100/TM,
   write('Poblacion de mosquitos: '), write(TM),nl,
-  write('Mosquitos infectados: '), write(TMEnf),
-  write(' ('), write(PEnf),write('%)'), nl.
+  write('Mosquitos infectados: '), write(TMEnf).
+  % write(' ('), write(PEnf),write('%)'), nl.
