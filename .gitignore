@@ -1,3 +1,5 @@
 */.idea
 *.sqlite
 *.uml
+*/sim/*_*
+sim/*
