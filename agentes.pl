@@ -172,43 +172,52 @@ crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
   assert(c_moyote(Folio,-1,0)).
+
 crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   Folio is 0,
   assert(folio_moyote(Folio)),
   assert(moyote(Folio,Area,FechaN,Ciclos,Infeccion)),
   assert(c_moyote(Folio,-1,0)).
+
 crea_moyote_auto(Area,FechaN,Infeccion):-
   random(C),
   Ciclos is 168 + floor(C*504),
   crea_moyote(Area,FechaN,Ciclos,Infeccion).
+
 crea_moyote_sano(Area,FechaN,Ciclos):-
   Infeccion is -1, % -1 representa un mosquito sano
   crea_moyote(Area,FechaN,Ciclos,Infeccion).
+
 crea_n_moyotes_auto(Area,FechaN,Inf,N):-
   N>0,!,
   M is N-1,
   crea_moyote_auto(Area,FechaN,Inf),
   crea_n_moyotes_auto(Area,FechaN,Inf,M).
 crea_n_moyotes_auto(_,_,_,0):-!.
+
 mata_moyote(Folio):-
   retractall(moyote(Folio,_,_,_,_)),
   retractall(infeccion_moyote(Folio,_,_)),
   retractall(c_moyote(Folio,_,_)).
+
 set_ciclos_hasta_parir_moyote(Folio,Ciclos):-
   c_moyote(Folio,_,Tanque),
   retractall(c_moyote(Folio,_,_)),
   assert(c_moyote(Folio,Ciclos,Tanque)).
+
 baja_ciclos_hasta_parir_moyote(Folio,Ciclos):-
   c_moyote(Folio,C1,Tanque),
   New_ciclos is max(0,C1-Ciclos),
   retractall(c_moyote(Folio,_,_)),
   assert(c_moyote(Folio,New_ciclos,Tanque)).
+
 llena_tanque_moyote(Folio,Cant):-
   c_moyote(Folio,Ciclos,C1),
   % max y min son para que se quede en el intervalo: [0,1]
   C2 is max(min(1,C1 + Cant),0),
   retractall(c_moyote(Folio,_,_)),
   assert(c_moyote(Folio,Ciclos,C2)).
+
 vacia_tanque_moyote(Folio,Cant):-
   Cant1 is -1 * Cant,
   llena_tanque_moyote(Folio,Cant1).
@@ -236,6 +245,7 @@ crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
   retractall(folio_bultos(_)),
   assert(folio_bultos(Folio)),
   assert(bulto_huevos(Folio,FolioAgua,CantH,Dias,Inf)).
+
 crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
   asserta(folio_bultos(0)),
   crea_bulto_huevos(FolioAgua,CantH,Dias,Inf).

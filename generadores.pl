@@ -300,5 +300,6 @@ crear_cuerpos_agua(Area,Cant):-
     Cant2 is Cant -1,
     crear_cuerpos_agua(Area,Cant2).
 
+% cambia el 4 por siete para obtener solo 0.1, 0.2, 0.3, 0.5 y 0.7
 revisar_porcentaje(4,7).
 revisar_porcentaje(X,X).
