@@ -295,7 +295,7 @@ crear_cuerpos_agua(Area,Cant):-
     random(100,501,CapH),
     random(1,6,Aux),
     revisar_porcentaje(Aux,Cap),
-    CapH is Cap/10,
+    P_Vaciado is Cap/10,
     crea_agua_var(Area,CapH,P_Vaciado),
     Cant2 is Cant -1,
     crear_cuerpos_agua(Area,Cant2).
