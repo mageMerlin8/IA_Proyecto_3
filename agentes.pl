@@ -1,4 +1,3 @@
-
 :-dynamic
   area/3,
   areas_vecinas/2,

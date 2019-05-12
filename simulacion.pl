@@ -89,6 +89,40 @@ b(0.740818220682).
 logistic_personas_concientes(Dias,P_personas_concientes):-
   b(B),
   P_personas_concientes is 1 / (1 + 8*(B**Dias)).
+
+quita_charcos_por_panico:-
+  p_personas_concientes(P_cons),
+  %hasta 40% de los charcos en un dia
+  random(0,0.4,R),P is R * P_cons,
+  findall(C,agua_var(C,_,_,_),Charcos),
+  length(Charcos,Lch),NumAQuitar is floor(Lch * P),
+  random_permutation(Charcos,Charcos_permute),
+  quita_muchos_charcos(Charcos_permute,NumAQuitar).
+
+mata_moyotes_por_panico:-
+  % mueren hasta 30% por panico
+  p_personas_concientes(P_cons),
+  random(0,0.3,R),P is R * P_cons,
+  findall(M,moyote(M,_,_,_,_),Moyotes),
+  length(Moyotes,Lch),NumAQuitar is floor(Lch * P),
+  random_permutation(Moyotes,Moyotes_permute),
+  quita_muchos_moyotes(Moyotes_permute,NumAQuitar).
+
+quita_muchos_charcos([Charco|Otros],N):-
+  N>0,!,
+  elimina_agua_var(Charco),
+  M is N-1,
+  quita_muchos_charcos(Otros,M).
+quita_muchos_charcos([],_).
+quita_muchos_charcos(_,0).
+
+quita_muchos_moyotes([Moyo|Otros],N):-
+  N>0,!,
+  mata_moyote(Moyo),
+  M is N-1,
+  quita_muchos_moyotes(Otros,M).
+quita_muchos_moyotes([],_).
+quita_muchos_moyotes(_,0).
 %%%%%%%%%%
 % CICLOS %
 %%%%%%%%%%
@@ -118,6 +152,8 @@ ciclar_mundo_dia:-
   ciclo_del_agua_dia,
   hospitalizar_personas_dia(_NumHospitalizados),
   matar_personas_dia,
+  mata_moyotes_por_panico,
+  quita_charcos_por_panico,
   ciclo_actual(Presente),
   Dia is div(Presente, 24),
   % numero_muertes_dia(_NumMuertes,Dia),

@@ -407,7 +407,10 @@ quita_agua_charco_dia(Charco):-
 
 llover_area(Area,Lluvia):-
   findall(X,agua_var(X,Area,_,_),Charcos),
-  llena_muchos_charcos_por_lluvia(Charcos,Lluvia).
+  llena_muchos_charcos_por_lluvia(Charcos,Lluvia),
+  area(Area,Encharcamiento,_),!,
+  NumCharcos is floor(Encharcamiento * Lluvia),
+  crea_charcos_por_lluvia(Area,NumCharcos).
 llena_muchos_charcos_por_lluvia([],_):-!.
 llena_muchos_charcos_por_lluvia([Charco|Charcos],L):-
   llena_charco_lluvia(Charco,L),
@@ -436,6 +439,13 @@ llover_vecinos([V1|Vecinos],Lluvia):-
   L2 is Lluvia-1,
   haz_llover(V1,L2),
   llover_vecinos(Vecinos,Lluvia).
+crea_charcos_por_lluvia(_,0):-!.
+crea_charcos_por_lluvia(Area,N):-
+  N>0,
+  random(100,501,CantH),
+  random(1,6,P1),P_Vaciado is P1/10.0,
+  crea_agua_var(Area,CantH,P_Vaciado),
+  M is N-1,crea_charcos_por_lluvia(Area,M).
 
 
 
