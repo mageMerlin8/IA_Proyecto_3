@@ -54,6 +54,7 @@ crea_agua_var(FolioA,CapH,P_Vaciado):-
   assert(agua_var(Folio,FolioA,CapH,P_Vaciado)),
   % le damos un valor inicial de 0.1%(lleno) al cuerpo de agua para modificar despues
   assert(cant_agua_var(Folio,0.1)).
+
 crea_agua_var(FolioA,CapH,P_Vaciado):-
   Folio is 0,
   assert(folio_agua_var(0)),
@@ -64,6 +65,7 @@ elimina_agua_var(Folio):-
   retractall(cant_agua_var(Folio,_)),
   retractall(agua_var(Folio,_,_,_)),
   retractall(bulto_huevos(_,Folio,_,_,_)).
+
 cupo_huevos_agua(Agua,Cupo):-
   agua_var(Agua,_,Cap,_),
   findall(Z,bulto_huevos(_,Agua,Z,_,_),Huevos),
@@ -75,6 +77,7 @@ llena_agua_var(Folio,P):-
   New is max(0,min(1,P_actual + P)),
   retractall(cant_agua_var(Folio,_)),
   assert(cant_agua_var(Folio,New)).
+
 vacia_agua_var(Folio,P):-
   P2 is -1*P,
   llena_agua_var(Folio,P2).
@@ -97,7 +100,7 @@ crea_persona(A_H,A_T,H_E,H_S):-
   Folio is F + 1,
   retractall(folio_persona(_)),
   assert(folio_persona(Folio)),
-  assert(persona(Folio,A_H,A_T,H_E,H_S,false,null)),
+  asserta(persona(Folio,A_H,A_T,H_E,H_S,false,null)),
   assert(persona_area(Folio,A_H)).
 
 crea_persona(A_H,A_T,H_E,H_S):-
@@ -236,8 +239,10 @@ crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
 crea_bulto_huevos(FolioAgua,CantH,Dias,Inf):-
   asserta(folio_bultos(0)),
   crea_bulto_huevos(FolioAgua,CantH,Dias,Inf).
+
 destruye_bulto(Folio):-
   retractall(bulto_huevos(Folio,_,_,_,_)).
+
 eclosiona_huevos(Huevos,Fecha):-
   bulto_huevos(Huevos,Area,Cant,_,Inf),
   %nace 40% de la poblacion
@@ -248,6 +253,7 @@ eclosiona_huevos(Huevos,Fecha):-
   crea_n_moyotes_auto(Area,Fecha,Inf,NumInf),
   crea_n_moyotes_auto(Area,Fecha,-1,NumSanos),
   destruye_bulto(Huevos).
+
 quita_dias_huevos(Huevos,Dias):-
   bulto_huevos(Huevos,Agua,Cant,D1,Tipo),
   D2 is max(0,D1-Dias),
@@ -259,6 +265,7 @@ infeccion_moyote(folioM,fecha_fin_incubacion,sepa)
 */
 crea_infeccion_moyote(Moyote,FechaFI,Sepa):-
   assert(infeccion_moyote(Moyote,FechaFI,Sepa)).
+
 destruye_infeccion_moyote(Moyote):-
   retractall(infeccion_moyote(Moyote,_,_)).
 /*
@@ -272,5 +279,6 @@ infeccion_persona(folioP,
 */
 crea_infeccion_persona(Persona,T,F1,F2,F3,F4,F5,FolioArea):-
   assert(infeccion_persona(Persona,T,F1,F2,F3,F4,F5,FolioArea)).
+
 destruye_infeccion_persona(Persona):-
   retractall(infeccion_persona(Persona,_,_,_,_,_,_)).
