@@ -4,17 +4,17 @@ crea_areas:-
   Trabajos is 2,
   Rec is 3,
   %res
-  crea_area(Casas,3),
+  crea_area(Casas,3,0),
   crea_agua_var(Casas,5000,0.10),
   agua_var(C1,Casas,_,_),!,
   llena_agua_var(C1,1),
   %tra
-  crea_area(Trabajos,1),
+  crea_area(Trabajos,1,0),
   crea_agua_var(Trabajos,5000,0.10),
   agua_var(T1,Trabajos,_,_),!,
   llena_agua_var(T1,1),
   %rec
-  crea_area(Rec,5),
+  crea_area(Rec,5,0),
   crea_agua_var(Rec,5000,0.10),
   agua_var(R1,Rec,_,_),!,
   llena_agua_var(R1,1),
@@ -60,7 +60,7 @@ crea_moyotes_en_lugares_aleatorios(N,P):-
   M is N-1,
   crea_moyotes_en_lugares_aleatorios(M,P).
 
-crea_mundo:-
+crea_mundo_prueba:-
   crea_areas,
   crea_agentes.
 

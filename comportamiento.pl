@@ -1,4 +1,5 @@
 :-include(datos_prueba).
+% :-include(generadores).
 
 %%%%%%%%
 % UTIL %
@@ -383,7 +384,7 @@ ciclo_del_agua_dia:-
   llover_dia.
 llover_dia:-
   tira_moneda(0.8),!,
-  findall(A,area(A,_),Areas),length(Areas,L),
+  findall(A,area(A,_,_),Areas),length(Areas,L),
   numero_aleatorio_entre(0,L,L1),N is floor(L1),
   nth0(N,Areas,AreaLluvia),
   numero_aleatorio_entre(2,4,L2),N1 is floor(L2),

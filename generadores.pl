@@ -1,6 +1,3 @@
-<<<<<<< HEAD
-:-include(agentes).
-=======
 /*GENERADORES DE agentes
 *
 *algunos son generados de forma aleatoria,
@@ -25,36 +22,70 @@ area(4,3,4).
 area(3,3,5).
 area(2,4,2).
 area(1,5,1).
+crea_medellin:-
 
-areas_vecinas(1,9).
-areas_vecinas(1,10).
-areas_vecinas(2,3).
-areas_vecinas(2,7).
-areas_vecinas(2,8).
-areas_vecinas(2,10).
-areas_vecinas(2,13).
-areas_vecinas(3,4).
-areas_vecinas(3,7).
-areas_vecinas(3,8).
-areas_vecinas(3,10).
-areas_vecinas(3,11).
-areas_vecinas(3,12).
-areas_vecinas(3,14).
-areas_vecinas(4,8).
-areas_vecinas(4,14).
-areas_vecinas(4,15).
-areas_vecinas(5,8).
-areas_vecinas(5,13).
-areas_vecinas(6,9).
-areas_vecinas(6,10).
-areas_vecinas(6,11).
-areas_vecinas(7,10).
-areas_vecinas(8,13).
-areas_vecinas(9,10).
-areas_vecinas(10,11).
-areas_vecinas(11,12).
-areas_vecinas(14,15).
-
+  Vecinos = [
+  % areas_vecinas(1,9).
+  [1,9],
+  % areas_vecinas(1,10).
+  [1,10],
+  % areas_vecinas(2,3).
+  [2,3],
+  % areas_vecinas(2,7).
+  [2,7],
+  % areas_vecinas(2,8).
+  [2,8],
+  % areas_vecinas(2,10).
+  [2,10],
+  % areas_vecinas(2,13).
+  [2,13],
+  % areas_vecinas(3,4).
+  [3,4],
+  % areas_vecinas(3,7).
+  [3,7],
+  % areas_vecinas(3,8).
+  [3,8],
+  % areas_vecinas(3,10).
+  [3,10],
+  % areas_vecinas(3,11).
+  [3,11],
+  % areas_vecinas(3,12).
+  [3,12],
+  % areas_vecinas(3,14).
+  [3,14],
+  % areas_vecinas(4,8).
+  [4,8],
+  % areas_vecinas(4,14).
+  [4,14],
+  % areas_vecinas(4,15).
+  [4,15],
+  % areas_vecinas(5,8).
+  [5,8],
+  % areas_vecinas(5,13).
+  [5,13],
+  % areas_vecinas(6,9).
+  [6,9],
+  % areas_vecinas(6,10).
+  [6,10],
+  % areas_vecinas(6,11).
+  [6,11],
+  % areas_vecinas(7,10).
+  [7,10],
+  % areas_vecinas(8,13).
+  [8,13],
+  % areas_vecinas(9,10).
+  [9,10],
+  % areas_vecinas(10,11).
+  [10,11],
+  % areas_vecinas(11,12).
+  [11,12],
+  % areas_vecinas(14,15).
+  [14,15]
+  ],
+  %asignar vecinos
+  asigna_vecinos(Vecinos),
+  %crear urbe
+  generar_urbe(1000,5000,0.1).
 recreativas([1,2,3,4,5]).
 laborales([6,7,8]).
 areas([15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]).
@@ -133,7 +164,7 @@ desempleados y jubilados. Para este modelo se */
 asignar_area_laboral(A_T,A_H):-
   /*% 1/3 de la poblacion estara en su casa en horas laborales, lo que
   corresponde a amas de casa, jubilados, freelancers y desempleados*/
-    random(1,4,Prob),
+    random(1,4,Prob),!,
     asignar_area_laboral(Prob,A_T,A_H).
 
 asignar_area_laboral(1,A_H,A_H).
@@ -141,8 +172,8 @@ asignar_area_laboral(1,A_H,A_H).
 /*Entra a este metodo en caso de no trabajar desde casa, pero se vuelve a
 manejar un random donde 1/3 parte de la poblacion labora en areas residenciales
 y 2/3 partes se concentran en laborales*/
-asignar_area_laboral(_,A_T,A_H):-
-    random(1,4,Prob),
+asignar_area_laboral(_,A_T,_A_H):-
+    random(1,4,Prob),!,
     getRandom_area_laboral(Prob,A_T).
 
 getRandom_area_laboral(1,A_T):-
@@ -212,7 +243,7 @@ generar_personas(Num):-
     asignar_area_laboral(A_T,A_H),
     asignar_horarios(H_E,H_S),
     crea_persona(A_H,A_T,H_E,H_S),
-    TotalNuevo is Total - 1,
+    TotalNuevo is Num - 1,
     generar_personas(TotalNuevo).
 
 getRecreativas(1,Folio,[X]):-
@@ -297,12 +328,12 @@ crear_cuerpos_agua(_,0):-!.
 crear_cuerpos_agua(Area,Cant):-
     random(100,501,CapH),
     random(1,6,Aux),
-    revisar_porcentaje(Aux,Cap),
-    CapH is Cap/10,
+    % revisar_porcentaje(Aux,Cap),
+    % CapH is Cap/10,
+    P_Vaciado is Aux/10.0,
     crea_agua_var(Area,CapH,P_Vaciado),
     Cant2 is Cant -1,
     crear_cuerpos_agua(Area,Cant2).
 
 revisar_porcentaje(4,7).
 revisar_porcentaje(X,X).
->>>>>>> Renata

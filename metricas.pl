@@ -167,7 +167,7 @@ metricas_fallecidos:-
   % quiza valga agregar el area con mayor numero de fallecimientos
 metricas_fallecidos.
 metricas_areas:-
-  findall(Z,area(Z,_),Areas),
+  findall(Z,area(Z,_,_),Areas),
   metricas_muchas_areas(Areas).
 metricas_muchas_areas([]):-!.
 metricas_muchas_areas([A1|Areas]):-

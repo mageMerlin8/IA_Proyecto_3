@@ -1,6 +1,6 @@
 
 :-dynamic
-  area/2,
+  area/3,
   areas_vecinas/2,
 
   agua_var/4,
@@ -23,8 +23,8 @@
   infeccion_persona/8.
 
 % Area(folio,constanteDeEcharcamiento)
-crea_area(Folio,Const):-
-  assert(area(Folio,Const)).
+crea_area(Folio,Const,P):-
+  assert(area(Folio,Const,P)).
 /*
   asigna_vecinos(Vec):- Vec es una lista donde cada elemento es una vertice en
                       el grafo del area de la forma [Area1,Area2] (Area1 y
