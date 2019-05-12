@@ -5,8 +5,8 @@
 %   crea_el_tiempo.%,
 %   % guitracer.
 main:-
-  % guitracer,
-  % trace,
+  % spy(asignar_todas_recreativas),
+  % guitracer,trace,
   crea_medellin,
   crea_el_tiempo.
 

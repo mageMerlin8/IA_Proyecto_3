@@ -331,5 +331,9 @@ reporte_diario:-
   TMEnf is TM - TMS,
   % PEnf is TMEnf *100/TM,
   write('Poblacion de mosquitos: '), write(TM),nl,
-  write('Mosquitos infectados: '), write(TMEnf),nl.
+  write('Mosquitos infectados: '), write(TMEnf),nl,
   % write(' ('), write(PEnf),write('%)'), nl.
+  num_charcos(NCharcos),
+  write('num_charcos:'),writeln(NCharcos).
+num_charcos(Num):-
+  findall(X,agua_var(X,_,_,_),Ls),length(Ls,Num).

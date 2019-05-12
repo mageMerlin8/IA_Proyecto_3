@@ -122,7 +122,7 @@ get_from_list([X|_],_,Pos,I,X):-
 
 get_from_list([_|Y],[A|B],Pos,I,Resp):-
     INuevo is I-1,
-    INuevo < A,
+    INuevo < A,!,
     get_from_list(Y,B,Pos,INuevo,Resp).
 
 get_from_list(X,A,Pos,I,Resp):-
@@ -236,14 +236,14 @@ get_folio_mosquito(0).
 llama predicados auxiliares para asignar areas*/
 
 generar_personas(0):-
-    asignar_recreativas.
+    asignar_todas_recreativas,!.
 
 generar_personas(Num):-
     asignar_area_hogar(A_H),
     asignar_area_laboral(A_T,A_H),
     asignar_horarios(H_E,H_S),
     crea_persona(A_H,A_T,H_E,H_S),
-    TotalNuevo is Num - 1,
+    TotalNuevo is Num - 1,!,
     generar_personas(TotalNuevo).
 
 getRecreativas(1,Folio,[X]):-
@@ -263,56 +263,81 @@ getRecreativas(Cant,Folio,Ls):-
     assert(persona_area_recreativa(Folio,X)),
     ord_union([X],LPrev,Ls).
 
-asignar_recreativas:-
-    persona(Folio,_,_,_,_,_,_),
+asignar_todas_recreativas:-
+  findall(X,persona(X,_,_,_,_,_,_),Personas),
+  asignar_recreativas(Personas).
+asignar_recreativas([]):-!.
+asignar_recreativas([P1|Personas]):-
     random(1,6,NumAreasR),
-    getRecreativas(NumAreasR,Folio,_),
-    fail.
+    getRecreativas(NumAreasR,P1,_),
+    asignar_recreativas(Personas).
 % asignar_recreativas(N,Persona,)
 
 /*CODIGO PARA CREAR N MOSQUITOS CON M INFECTADOS DADO UN RANGO DE SEPAS*/
 % Si las sepas no se indican se generan de las 4
-generar_mosquitos_porcentaje(Sanos, PInfectados):-
-  % Envia al metodo con las 4 sepas por default
-    generar_mosquitos_porcentaje(Sanos,PInfectados,4).
 
-generar_mosquitos_porcentaje(Sanos, PInfectados, Aux):-
-    Aux is PInfectados * Sanos,
-    round(Aux,Infectados),
-    generar_mosquitos_cantidad(Sanos,Infectados, Aux).
+generar_mosquitos_porcentaje(Num,P_infectados):-
+  generar_mosquitos_porcentaje(Num,P_infectados,4).
+generar_mosquitos_porcentaje(Num,P_infectados,NumSepas):-
+  Num>0,!,
+  genera_moyote_auto(P_infectados,NumSepas),
+  M is Num-1,
+  generar_mosquitos_porcentaje(M,P_infectados,NumSepas).
+generar_mosquitos_porcentaje(0,_,_):-!.
+genera_moyote_auto(P_infectados):-
+  genera_moyote_auto(P_infectados,4).
+genera_moyote_auto(P_infectados,NumSepas):-
+  maybe(P_infectados),!,%infectado tss
+  asignar_area_mosquito(Area),
+  random(0,NumSepas,Nr),Sepa is Nr+1,
+  crea_moyote_auto(Area,0,Sepa).
+genera_moyote_auto(_,_):-
+  %se salvo!
+  asignar_area_mosquito(Area),
+  crea_moyote_auto(Area,0,-1).
 
-generar_mosquitos_cantidad(Sanos, Infectados):-
-  % Manda con las 4 sepas por default
-    generar_mosquitos_cantidad(Sanos,Infectados,4).
-
-generar_mosquitos_cantidad(0,0,_):-!.
-
-generar_mosquitos_cantidad(Sanos,Infectados,Aux):-
-    random(1,21,Dado),
-    asignar_sepa(Dado,Sanos,Infectados,Sanos2,Infectados2,Tipo_I),
-    asignar_area_mosquito(Area),
-    crea_moyote_auto(Area,0,Tipo_I),
-    generar_mosquitos(Sanos2,Infectados2,Aux).
-
-asignar_sepa(_,X,0,Sanos,0,-1):-
-    Sanos is X -1.
-
-asignar_sepa(1,Sanos,Infectados,Sanos,Infectados2,1):-
-    Infectados2 is Infectados-1.
-
-asignar_sepa(2,Sanos,Infectados,Sanos,Infectados2,2):-
-    Infectados2 is Infectados-1.
-
-asignar_sepa(3,Sanos,Infectados,Sanos,Infectados2,3):-
-    Infectados2 is Infectados-1.
-
-asignar_sepa(4,Sanos,Infectados,Sanos,Infectados2,4):-
-    Infectados2 is Infectados-1.
-
-asignar_sepa(_,Sanos, Infectados, Sanos2, Infectados,-1):-
-    Sanos2 is Sanos-1.
-
-
+%
+% generar_mosquitos_porcentaje(Sanos, PInfectados):-
+%   % Envia al metodo con las 4 sepas por default
+%     generar_mosquitos_porcentaje(Sanos,PInfectados,4).
+%
+% generar_mosquitos_porcentaje(Sanos, PInfectados, Aux):-
+%     A1 is PInfectados * Sanos,
+%     round(A1,Infectados),
+%     generar_mosquitos_cantidad(Sanos,Infectados, Aux).
+%
+% generar_mosquitos_cantidad(Sanos, Infectados):-
+%   % Manda con las 4 sepas por default
+%     generar_mosquitos_cantidad(Sanos,Infectados,4).
+%
+% generar_mosquitos_cantidad(0,0,_):-!.
+%
+% generar_mosquitos_cantidad(Sanos,Infectados,Aux):-
+%     random(1,21,Dado),
+%     asignar_sepa(Dado,Sanos,Infectados,Sanos2,Infectados2,Tipo_I),
+%     asignar_area_mosquito(Area),
+%     crea_moyote_auto(Area,0,Tipo_I),
+%     generar_mosquitos(Sanos2,Infectados2,Aux).
+%
+% asignar_sepa(_,X,0,Sanos,0,-1):-
+%     Sanos is X -1.
+%
+% asignar_sepa(1,Sanos,Infectados,Sanos,Infectados2,1):-
+%     Infectados2 is Infectados-1.
+%
+% asignar_sepa(2,Sanos,Infectados,Sanos,Infectados2,2):-
+%     Infectados2 is Infectados-1.
+%
+% asignar_sepa(3,Sanos,Infectados,Sanos,Infectados2,3):-
+%     Infectados2 is Infectados-1.
+%
+% asignar_sepa(4,Sanos,Infectados,Sanos,Infectados2,4):-
+%     Infectados2 is Infectados-1.
+%
+% asignar_sepa(_,Sanos, Infectados, Sanos2, Infectados,-1):-
+%     Sanos2 is Sanos-1.
+%
+%
 
 /*CODIGO PARA CREAR LOS CUERPOS DE AGUA DE LAS AREAS*/
 

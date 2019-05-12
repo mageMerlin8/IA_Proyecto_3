@@ -383,7 +383,7 @@ ciclo_del_agua_dia:-
   vaciar_charcos_dia,
   llover_dia.
 llover_dia:-
-  tira_moneda(0.8),!,
+  tira_moneda(1),!,
   findall(A,area(A,_,_),Areas),length(Areas,L),
   numero_aleatorio_entre(0,L,L1),N is floor(L1),
   nth0(N,Areas,AreaLluvia),
@@ -409,7 +409,7 @@ llover_area(Area,Lluvia):-
   findall(X,agua_var(X,Area,_,_),Charcos),
   llena_muchos_charcos_por_lluvia(Charcos,Lluvia),
   area(Area,Encharcamiento,_),!,
-  NumCharcos is floor(Encharcamiento * Lluvia),
+  NumCharcos is 4*floor(Encharcamiento * Lluvia),
   crea_charcos_por_lluvia(Area,NumCharcos).
 llena_muchos_charcos_por_lluvia([],_):-!.
 llena_muchos_charcos_por_lluvia([Charco|Charcos],L):-
@@ -442,7 +442,7 @@ llover_vecinos([V1|Vecinos],Lluvia):-
 crea_charcos_por_lluvia(_,0):-!.
 crea_charcos_por_lluvia(Area,N):-
   N>0,
-  random(100,501,CantH),
+  random(10000,50001,CantH),
   random(1,6,P1),P_Vaciado is P1/10.0,
   crea_agua_var(Area,CantH,P_Vaciado),
   M is N-1,crea_charcos_por_lluvia(Area,M).
