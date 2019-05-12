@@ -3,12 +3,6 @@ Predicados para conseguir las métricas en un instante estático de la propagaci
 */
 
 % Funciones Generales
-tam_lista([],X):-
-  X is 0.
-
-tam_lista([_|Cola],Contador):-
-  tam_lista(Cola,Acumulado),
-  Contador is Acumulado + 1.
 
 mayorClave([],[],-1,-1).
 
@@ -28,42 +22,40 @@ abrirPareja([X,Y],X,Y).
 % Contadores
 moyotesXsepa(Serotipo,Cant):-
   findall(F, moyote(F,_,_,_,Serotipo),Ls),
-  tam_lista(Ls,Cant).
+  length(Ls,Cant).
 
 contar_moyotes(Y):-
   findall(F, moyote(F,_,_,_,_),Ls),
-  tam_lista(Ls,Y).
+  length(Ls,Y).
 
 moyotesXarea(Area,Serotipo,Cant):-
   findall(Folio,moyote(Folio,Area,_,_,Serotipo),Ls),
-  tam_lista(Ls,Cant).
+  length(Ls,Cant).
 
-personasXsepa(X,Y):-
-  findall(F,persona(F,_,_,_,_,_,null),Ls1),
-  findall(F2,infeccion_persona(F2,X,_,_,_,_,_,_),Ls2),
-  ord_intersect(Ls1,Ls2,Ls),
-  tam_lista(Ls,Y).
+personasXsepa(Sepa,NumPersonas):-
+  personas_con_infeccion_activa(Personas,Sepa),
+  length(Personas,NumPersonas).
 % personasXsepa(Sepa,NumPersonas):-
 %   findall(Persona,infeccion_persona(Persona,Sepa,_,_,_,_,_,_),Personas),
 %   length(Personas,NumPersonas).
 
 infectadosXsepa(X,Ls,Y):-
   findall(Folio,infeccion_persona(Folio,X,_,_,_,_,_,_),Ls),
-  tam_lista(Ls,Y).
+  length(Ls,Y).
 
 cant_habXarea(Area, residencia, Lista, Cant):-
   findall(Folio,persona(Folio,Area,_,_,_,false,null),Lista),
-  tam_lista(Lista,Cant).
+  length(Lista,Cant).
 
 cant_habXarea(Area,trabajo, Lista, Cant):-
   findall(Folio,persona(Folio,_,Area,_,_,false,null),Lista),
-  tam_lista(Lista,Cant).
+  length(Lista,Cant).
 
 cant_habXarea(Area,recreacion, Lista, Cant):-
   findall(Folio,persona(Folio,_,_,_,_,true,null),Lista1),
   findall(Folio2,persona_area_recreativa(Folio2,Area),Lista2),
   ord_subtract(Lista2,Lista1,Lista),
-  tam_lista(Lista,Cant).
+  length(Lista,Cant).
 
 infectadosXarea(Area,Sepa,Ls):-
   findall(Folio,infeccion_persona(Folio,Sepa,_,_,_,_,_,Area), Ls).
@@ -98,7 +90,7 @@ metricas_personasXsepa:-
   personasXsepa(3,T),
   personasXsepa(4,C),
   findall(F,persona(F,_,_,_,_,_,null),Ls1),
-  tam_lista(Ls1,Total),
+  length(Ls1,Total),
   write('Total de Personas: '), write(Total), nl,
   write('   Sanas: '), write(S), nl,
   write('   Con serotipo 1: '), write(U), nl,
@@ -123,10 +115,10 @@ metricas_fallecidos:-
   ord_intersect(Lf,Ls3,Lfs3),
   ord_intersect(Lf,Ls4,Lfs4),
   % se calculan los tamaños de cada poblacion
-  tam_lista(Lfs1,U),
-  tam_lista(Lfs2,D),
-  tam_lista(Lfs3,T),
-  tam_lista(Lfs4,C),
+  length(Lfs1,U),
+  length(Lfs2,D),
+  length(Lfs3,T),
+  length(Lfs4,C),
   mayorClave([1,2,3,4],[U,D,T,C],S,N),
   P is N * 100 / F,
   write('Serotipo con mayor mortandad: '), write(S),nl,
@@ -139,12 +131,12 @@ metricas_fallecidos:-
   ord_intersect(Lfs2,Lfs4,L24),
   ord_intersect(Lfs3,Lfs4,L34),
   % obtenemos el tamaño de cada combinacion
-  tam_lista(L12,UD),
-  tam_lista(L13,UT),
-  tam_lista(L14,UC),
-  tam_lista(L23,DT),
-  tam_lista(L24,DC),
-  tam_lista(L34,TC),
+  length(L12,UD),
+  length(L13,UT),
+  length(L14,UC),
+  length(L23,DT),
+  length(L24,DC),
+  length(L34,TC),
   mayorClave([[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]],[UD,UT,UC,DT,DC,TC],[S1,S2],C),
   PC is C * 100.0 / F,
   write('Combinación par con mayor mortandad: Serotipo'), write(S1), write(' y Serotipo'), write(S2),nl,
@@ -155,10 +147,10 @@ metricas_fallecidos:-
   ord_intersect(Lfs1,L34,L134),
   ord_intersect(Lfs1,L24,L124),
   ord_intersect(Lfs2,L34,L234),
-  tam_lista(L123,UDT),
-  tam_lista(L134,UTC),
-  tam_lista(L124,UDC),
-  tam_lista(L234,DTC),
+  length(L123,UDT),
+  length(L134,UTC),
+  length(L124,UDC),
+  length(L234,DTC),
   mayorClave([[1,2,3],[1,3,4],[1,2,4],[2,3,4]],[UDT,UTC,UDC,DTC],[A1|B],T),
   abrirPareja(B,A2,A3),
   PT is T * 100 / F,
@@ -169,7 +161,7 @@ metricas_fallecidos:-
   dado que ya se cuentan con intersecciones pares, se intersecta una combinacion
   que incluya los 4 conjuntios*/
   ord_intersect(L12,L34,Ltot),
-  tam_lista(Ltot,UDTC),
+  length(Ltot,UDTC),
   Ptot is UDTC * 100 / F,
   write('Porcentaje de fallecimientos por los 4 serotipos: '), write(Ptot),nl.
   % quiza valga agregar el area con mayor numero de fallecimientos
@@ -228,12 +220,12 @@ metricas_registroXarea(X):-
   ord_union(I1,I2,I12),
   ord_union(I3,I4,I34),
   ord_union(I12,I34,ITodos),
-  tam_lista(ITodos,NumI),
+  length(ITodos,NumI),
   write('Infectados totales: '), write(NumI), nl,
-  tam_lista(I1,T1),
-  tam_lista(I2,T2),
-  tam_lista(I3,T3),
-  tam_lista(I4,T4),
+  length(I1,T1),
+  length(I2,T2),
+  length(I3,T3),
+  length(I4,T4),
   write('   Serotipo 1: '), write(T1), nl,
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
@@ -259,12 +251,12 @@ metricas_infectadosXarea(X):-
   ord_union(I1,I2,I12),
   ord_union(I3,I4,I34),
   ord_union(I12,I34,ITodos),
-  tam_lista(ITodos,NumI),
+  length(ITodos,NumI),
   write('Infectados vivos totales: '), write(NumI), nl,
-  tam_lista(I1,T1),
-  tam_lista(I2,T2),
-  tam_lista(I3,T3),
-  tam_lista(I4,T4),
+  length(I1,T1),
+  length(I2,T2),
+  length(I3,T3),
+  length(I4,T4),
   write('   Serotipo 1: '), write(T1), nl,
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
@@ -288,12 +280,12 @@ metricas_defuncionesXarea(X):-
   ord_union(I1,I2,I12),
   ord_union(I3,I4,I34),
   ord_union(I12,I34,ITodos),
-  tam_lista(ITodos,NumI),
+  length(ITodos,NumI),
   write('Fallecidos totales: '), write(NumI), nl,
-  tam_lista(I1,T1),
-  tam_lista(I2,T2),
-  tam_lista(I3,T3),
-  tam_lista(I4,T4),
+  length(I1,T1),
+  length(I2,T2),
+  length(I3,T3),
+  length(I4,T4),
   write('   Serotipo 1: '), write(T1), nl,
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
@@ -306,7 +298,7 @@ numero_muertos(Num):-
 
 reporte_diario:-
   findall(Folio,persona(Folio,_,_,_,_,_,null),P),
-  tam_lista(P,TP),
+  length(P,TP),
   write('Numero de habitantes: '), write(TP),nl,
 
   numero_muertos(TD),
@@ -320,10 +312,11 @@ reporte_diario:-
   personasXsepa(3,T),
   personasXsepa(4,C),
   TI is U + D + T + C,
+  numero_perosnas_hospitalizadas(NumHospitalizados),
   % PInf is TI * 100 / TP,
   write('Numero de personas infectadas: '), write(TI),nl,
   % write(' ('), write(PInf), write('%)'), nl,
-
+  write('Numero personas hospitalizadas: '),writeln(NumHospitalizados),
   mayorClave([1,2,3,4],[U,D,T,C],PeorSepa, _Cont),
   % PSepa is Cont * 100 / TI,
   write('Sepa de mayor contagio: '),write(PeorSepa),nl,
@@ -331,8 +324,8 @@ reporte_diario:-
 
   findall(Folio2,moyote(Folio2,_,_,_,_),LM),
   findall(Folio3,moyote(Folio3,_,_,_,-1),LMSanos),
-  tam_lista(LM,TM),
-  tam_lista(LMSanos, TMS),
+  length(LM,TM),
+  length(LMSanos, TMS),
   TMEnf is TM - TMS,
   % PEnf is TMEnf *100/TM,
   write('Poblacion de mosquitos: '), write(TM),nl,

@@ -176,7 +176,7 @@ crea_moyote(Area,FechaN,Ciclos,Infeccion):-
   assert(c_moyote(Folio,-1,0)).
 crea_moyote_auto(Area,FechaN,Infeccion):-
   random(C),
-  Ciclos is 168 + floor(C*504),
+  Ciclos is 672 + floor(C*840),
   crea_moyote(Area,FechaN,Ciclos,Infeccion).
 crea_moyote_sano(Area,FechaN,Ciclos):-
   Infeccion is -1, % -1 representa un mosquito sano
@@ -243,7 +243,7 @@ eclosiona_huevos(Huevos,Fecha):-
   %nace 40% de la poblacion
   numero_aleatorio_entre(0.3,0.5,P),NumNuevos is floor(P*Cant),
   %nace entre 1 y 10% enferma
-  numero_aleatorio_entre(0.01,0.1,P2),NumInf is floor(P2*NumNuevos),
+  numero_aleatorio_entre(0.5,0.8,P2),NumInf is floor(P2*NumNuevos),
   NumSanos is Cant-NumInf,
   crea_n_moyotes_auto(Area,Fecha,Inf,NumInf),
   crea_n_moyotes_auto(Area,Fecha,-1,NumSanos),

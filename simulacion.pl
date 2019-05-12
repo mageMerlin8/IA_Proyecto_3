@@ -27,7 +27,7 @@ numero_muertes_dia(Num,Dia):-
 %%%%%%%%%%
 crea_el_tiempo:-
   assert(ciclo_actual(0)),
-  assert(panico(false)).
+  assert(panico(null)).
 avanza_el_tiempo:-
   ciclo_actual(Pasado),
   Presente is Pasado + 1,
@@ -55,6 +55,32 @@ change_panic(Panic):-
 change_panic(Panic):-
   retractall(panico(_)),
   assert(panico(Panic)),!.
+
+cicla_panico_dia:-
+  panico(null),
+  is_it_time_to_panic(X),X=false,!.
+cicla_panico_dia:-
+  panico(null),
+  is_it_time_to_panic(true),
+  change_panic(1),!.
+cicla_panico_dia:-
+  panico(Panic),
+  NewPanic is Panic + 1,
+  change_panic(NewPanic),!.
+
+p_personas_concientes(0):-
+  panico(null),!.
+p_personas_concientes(P):-
+  panico(Dias),
+  0<Dias,Dias < 27,!,
+  logistic_personas_concientes(Dias,P).
+p_personas_concientes(P):-
+  panico(Dias),
+  Dias > 26,!,
+  D1 is Dias - 40,
+  logistic_personas_concientes(D1,P1),
+  P is 1-P1.
+p_personas_concientes(0).
 
 b(0.740818220682).
 logistic_personas_concientes(Dias,P_personas_concientes):-
@@ -91,10 +117,10 @@ ciclar_mundo_dia:-
   matar_personas_dia,
   ciclo_actual(Presente),
   Dia is div(Presente, 24),
-  numero_muertes_dia(_NumMuertes,Dia),
+  % numero_muertes_dia(_NumMuertes,Dia),
 
-  is_it_time_to_panic(Panic),
-  change_panic(Panic),
+  cicla_panico_dia,
+  p_personas_concientes(Panic),
 
   % tell(user),
   crea_nombre_archivo(Dia,0,NomFile),
@@ -136,25 +162,25 @@ crea_nombre_archivo(Dia,FolioSim,NomFile):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 hospitalizar_personas_dia(NumAHospitalizar):-
-  panico(true),!,
+  panico(null),!,
   personas_sintomaticas(Enfermitos),
   separar_enfermos_hosp(Enfermitos,_,NoHosp),
   length(NoHosp,NumEnf),
   % porcentaje que va al hospital:
-  % numero_aleatorio_entre(0.60,0.80,P1),
-  numero_aleatorio_entre(0.70,0.90,P1),
+  numero_aleatorio_entre(0.1,0.35,P1),
+  % P1 is 0.5,
   NumAHospitalizar is floor(NumEnf * P1),
   random_permutation(NoHosp,Enfermitos_permutados),
   hospitalizar_primeros_n_enfermitos(Enfermitos_permutados,NumAHospitalizar).
 hospitalizar_personas_dia(NumAHospitalizar):-
-  panico(false),
+  p_personas_concientes(X),!,0=<X,!,
   personas_sintomaticas(Enfermitos),
   separar_enfermos_hosp(Enfermitos,_,NoHosp),
   length(NoHosp,NumEnf),
   % porcentaje que va al hospital:
-  % numero_aleatorio_entre(0.01,0.02,P1),
-  P1 is 0.5,
-  NumAHospitalizar is floor(NumEnf * P1),
+  numero_aleatorio_entre(0.80,0.90,P1),
+  % * X por que solo X% de la gente sabe de la enfermedad
+  NumAHospitalizar is floor(min(0.4,P1 * X) * NumEnf ),
   random_permutation(NoHosp,Enfermitos_permutados),
   hospitalizar_primeros_n_enfermitos(Enfermitos_permutados,NumAHospitalizar).
 hospitalizar_primeros_n_enfermitos(_,0):-!.

@@ -110,7 +110,7 @@ ciclar_personas([_|Personas],Dia,Hora):-
 
 persona_picadura_infectada(Persona,Sepa):-
   %Chacar primero que no tenga infeccion activa
-  \+persona_infeccion_activa(Persona,_),
+  \+persona_infeccion_activa(Persona,_),!,
   ciclo_actual(Fecha_Piquete),
   %incubacion entre 5 y 7 dias o 120 y 168 horas
   numero_aleatorio_entre(120,168,F2),
@@ -134,6 +134,7 @@ persona_picadura_infectada(Persona,Sepa):-
                          Fecha_Ini_Sintomas,
                          Fecha_Fin_Sintomas,
                          Area_Picadura).
+persona_picadura_infectada(_,_):-!.
 all_reasons_to_panic(Reasons):-
   findall(Z,reason_to_panic(Z),Reasons).
   % findall(Z,hospitalizacion(Z),L1),
@@ -161,8 +162,8 @@ persona_sintomatica(Persona):-
   persona(Persona,_,_,_,_,_,null),
   ciclo_actual(Presente),
   FechaIS =< Presente, Presente < FechaFS.
-personas_con_infeccion_activa(Personas):-
-  findall(X,persona_infeccion_activa(X),Personas).
+personas_con_infeccion_activa(Personas,Sepa):-
+  findall(X,persona_infeccion_activa(X,Sepa),Personas).
 persona_infeccion_activa(Persona,Sepa):-
   infeccion_persona(Persona,Sepa,FechaP,_,FechaFC,_,_,_),
   ciclo_actual(Presente),
@@ -176,17 +177,22 @@ persona_sana(Persona):-
   findall(Fsintomas,infeccion_persona(Persona,_,_,_,_,_,Fsintomas,_),Fechas),
   ciclo_actual(Presente),
   numero_mayor_o_igual_a_lista(Presente,Fechas).
-
+numero_perosnas_hospitalizadas(Num):-
+  todos_los_hospitalizados(LS),length(LS,Num).
+todos_los_hospitalizados(Personas):-
+  findall(X,persona_hospitalizada(X),Personas).
+persona_hospitalizada(Persona):-
+  persona(Persona,_,_,_,_,true,null).
 
 %%%%%%%%%%%
 % MOYOTES %
 %%%%%%%%%%%
 tendencia_picar(alta,X):-
-  numero_aleatorio_entre(0.50,0.80,X).
+  numero_aleatorio_entre(0.70,0.90,X).
 tendencia_picar(media,X):-
-  numero_aleatorio_entre(0.30,0.50,X).
+  numero_aleatorio_entre(0.50,0.70,X).
 tendencia_picar(baja,X):-
-  numero_aleatorio_entre(0.10,0.30,X).
+  numero_aleatorio_entre(0.30,0.50,X).
 porcentaje_llenado_tanque(alto,X):-
   numero_aleatorio_entre(0.70,0.90,X).
 porcentaje_llenado_tanque(medio,X):-
@@ -230,13 +236,13 @@ moyote_intenta_picar(Folio,Hora):-
 % TODO: implementar moyote_pica_infectado/2:
 % moyote_pica_infectado(folio,sepa).
 moyote_pica_infectado(Moyote,Infeccion):-
-  moyote_sano(Moyote),
+  moyote_sano(Moyote),!,
   ciclo_actual(Presente),
   % 5-7 dias 120-168
   numero_aleatorio_entre(120,168,T),TiempoIncInfeccion is floor(T),
   FechaFin is Presente + TiempoIncInfeccion,
   crea_infeccion_moyote(Moyote,FechaFin,Infeccion).
-
+moyote_pica_infectado(_,_):-!.
 moyote_pica(Folio,Hora):-
   moyote(Folio,Area,_,_,Infeccion),
   area_no_vacia(Area),
@@ -281,7 +287,9 @@ moyte_intenta_parir(Moyote):-
   numero_aleatorio_entre(150,250,N2),NumHuevos is floor(N2),
   %dias
   numero_aleatorio_entre(4,5,N3),Dias is ceil(N3),
-  crea_bulto_huevos(Agua_huevos,NumHuevos,Dias,Infeccion).
+  crea_bulto_huevos(Agua_huevos,NumHuevos,Dias,Infeccion),
+  vacia_tanque_moyote(Moyote,1),
+  set_ciclos_hasta_parir_moyote(Moyote,-1).
 
 %ver si me muero
 ciclo_moyote(Moyote,_):-
@@ -301,8 +309,8 @@ ciclo_moyote(Moyote,_):-
 %intento incubar
 ciclo_moyote(Moyote,_):-
   c_moyote(Moyote,_,Tank),
-  Tank > 0.85,
-  numero_aleatorio_entre(4,5,N),
+  Tank > 0.95,
+  numero_aleatorio_entre(4,6,N),
   Ciclos is floor(N),
   set_ciclos_hasta_parir_moyote(Moyote,Ciclos),!.
 %intento comer
@@ -326,6 +334,7 @@ avanza_embarazado_1_dia(X):-
   baja_ciclos_hasta_parir_moyote(X,1).
 moyote_embarazado(Moyote):-
   c_moyote(Moyote,Dias,_),
+  \+Dias = null,
   Dias > 0.
 
 moyote_sano(Moyote):-
@@ -373,11 +382,11 @@ ciclo_del_agua_dia:-
   vaciar_charcos_dia,
   llover_dia.
 llover_dia:-
-  tira_moneda(0.5),!,
+  tira_moneda(0.8),!,
   findall(A,area(A,_),Areas),length(Areas,L),
   numero_aleatorio_entre(0,L,L1),N is floor(L1),
   nth0(N,Areas,AreaLluvia),
-  numero_aleatorio_entre(0,4,L2),N1 is floor(L2),
+  numero_aleatorio_entre(2,4,L2),N1 is floor(L2),
   llover_area(AreaLluvia,N1).
 llover_dia.%:-
   % write('no llovio').
