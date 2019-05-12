@@ -1,12 +1,14 @@
 :-include(comportamiento).
 :-include(metricas).
-main:-
-  \+crea_mundo_prueba,
-  crea_el_tiempo.%,
-%   % guitracer.
 % main:-
-%   crea_medellin,
-%   crea_el_tiempo.
+%   \+crea_mundo_prueba,
+%   crea_el_tiempo.%,
+%   % guitracer.
+main:-
+  % guitracer,
+  % trace,
+  crea_medellin,
+  crea_el_tiempo.
 
 :-dynamic
   ciclo_actual/1,

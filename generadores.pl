@@ -109,7 +109,7 @@ generar_urbe_menosSepas(NumPersonas, NumMosquitos, PorcentajeI, NumSepas):-
 /*PREDICADO GENERICOS*/
 
 pos_from([X|_],Casilla,X):-
-    Casilla is 1.
+    Casilla is 1,!.
 
 pos_from([_|Y],Casilla,X):-
     Nueva is Casilla - 1,
@@ -118,7 +118,7 @@ pos_from([_|Y],Casilla,X):-
 getCabeza([X|_],X).
 
 get_from_list([X|_],_,Pos,I,X):-
-    I = Pos.
+    I = Pos,!.
 
 get_from_list([_|Y],[A|B],Pos,I,Resp):-
     INuevo is I-1,
@@ -144,7 +144,7 @@ getProbas(habitantes,Probas,Tope):-
   area de tener habitantes, probabilidades que reflejan la densidad esperada
   en cada area*/
 
-enlazar_densidades([],[1]).
+enlazar_densidades([],[1]):-!.
 
 enlazar_densidades([X|Y],[NuevoTope|LPrevia]):-
     enlazar_densidades(Y,LPrevia),
@@ -177,7 +177,7 @@ asignar_area_laboral(_,A_T,_A_H):-
     getRandom_area_laboral(Prob,A_T).
 
 getRandom_area_laboral(1,A_T):-
-    random(1,6,A_T).
+    random(1,6,A_T),!.
 
 getRandom_area_laboral(_,A_T):-
     random(6,9,A_T).
@@ -250,7 +250,7 @@ getRecreativas(1,Folio,[X]):-
     recreativas(Ls),
     random(1,6,Pos),
     pos_from(Ls,Pos,X),
-    assert(persona_area_recreativa(Folio,X)).
+    assert(persona_area_recreativa(Folio,X)),!.
 
 getRecreativas(Cant,Folio,Ls):-
     CantNueva is Cant -1,
@@ -266,9 +266,9 @@ getRecreativas(Cant,Folio,Ls):-
 asignar_recreativas:-
     persona(Folio,_,_,_,_,_,_),
     random(1,6,NumAreasR),
-    asignar_recreativas(NumAreasR,Folio,_),
+    getRecreativas(NumAreasR,Folio,_),
     fail.
-
+% asignar_recreativas(N,Persona,)
 
 /*CODIGO PARA CREAR N MOSQUITOS CON M INFECTADOS DADO UN RANGO DE SEPAS*/
 % Si las sepas no se indican se generan de las 4
@@ -329,7 +329,7 @@ crear_cuerpos_agua(Area,Cant):-
     random(100,501,CapH),
     random(1,6,Aux),
     revisar_porcentaje(Aux,Cap),
-    P_Vaciado is Cap/10,
+    P_Vaciado is Cap/10.0,
     crea_agua_var(Area,CapH,P_Vaciado),
     Cant2 is Cant -1,
     crear_cuerpos_agua(Area,Cant2).

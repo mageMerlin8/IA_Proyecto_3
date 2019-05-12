@@ -1,5 +1,5 @@
-:-include(datos_prueba).
-% :-include(generadores).
+% :-include(datos_prueba).
+:-include(generadores).
 
 %%%%%%%%
 % UTIL %
