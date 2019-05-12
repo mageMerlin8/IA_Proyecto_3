@@ -92,17 +92,17 @@ logistic_personas_concientes(Dias,P_personas_concientes):-
 
 quita_charcos_por_panico:-
   p_personas_concientes(P_cons),
-  %hasta 40% de los charcos en un dia
-  random(0,0.4,R),P is R * P_cons,
+  %hasta 20-40% de los charcos en un dia
+  random(0,2.4,R),P is R * P_cons,
   findall(C,agua_var(C,_,_,_),Charcos),
   length(Charcos,Lch),NumAQuitar is floor(Lch * P),
   random_permutation(Charcos,Charcos_permute),
   quita_muchos_charcos(Charcos_permute,NumAQuitar).
 
 mata_moyotes_por_panico:-
-  % mueren hasta 30% por panico
+  % mueren hasta 10-30% por panico
   p_personas_concientes(P_cons),
-  random(0,0.3,R),P is R * P_cons,
+  random(0.1,0.3,R),P is R * P_cons,
   findall(M,moyote(M,_,_,_,_),Moyotes),
   length(Moyotes,Lch),NumAQuitar is floor(Lch * P),
   random_permutation(Moyotes,Moyotes_permute),
@@ -113,16 +113,16 @@ quita_muchos_charcos([Charco|Otros],N):-
   elimina_agua_var(Charco),
   M is N-1,
   quita_muchos_charcos(Otros,M).
-quita_muchos_charcos([],_).
-quita_muchos_charcos(_,0).
+quita_muchos_charcos([],_):-!.
+quita_muchos_charcos(_,0):-!.
 
 quita_muchos_moyotes([Moyo|Otros],N):-
   N>0,!,
   mata_moyote(Moyo),
   M is N-1,
   quita_muchos_moyotes(Otros,M).
-quita_muchos_moyotes([],_).
-quita_muchos_moyotes(_,0).
+quita_muchos_moyotes([],_):-!.
+quita_muchos_moyotes(_,0):-!.
 %%%%%%%%%%
 % CICLOS %
 %%%%%%%%%%
@@ -162,7 +162,7 @@ ciclar_mundo_dia:-
   p_personas_concientes(Panic),
 
   % tell(user),
-  crea_nombre_archivo(Dia,0,NomFile),
+  crea_nombre_archivo(Dia,1,NomFile),
   tell(NomFile),
   write('Dia #'),writeln(Dia),
   writeln('------------------'),
