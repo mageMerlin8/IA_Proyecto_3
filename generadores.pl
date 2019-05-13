@@ -85,7 +85,7 @@ crea_medellin:-
   %asignar vecinos
   asigna_vecinos(Vecinos),
   %crear urbe
-  generar_urbe(1000,5000,0.1).
+  generar_urbe(3000,10000,0.001).
 recreativas([1,2,3,4,5]).
 laborales([6,7,8]).
 areas([15,14,13,12,11,10,9,8,7,6,5,4,3,2,1]).
@@ -295,49 +295,6 @@ genera_moyote_auto(_,_):-
   %se salvo!
   asignar_area_mosquito(Area),
   crea_moyote_auto(Area,0,-1).
-
-%
-% generar_mosquitos_porcentaje(Sanos, PInfectados):-
-%   % Envia al metodo con las 4 sepas por default
-%     generar_mosquitos_porcentaje(Sanos,PInfectados,4).
-%
-% generar_mosquitos_porcentaje(Sanos, PInfectados, Aux):-
-%     A1 is PInfectados * Sanos,
-%     round(A1,Infectados),
-%     generar_mosquitos_cantidad(Sanos,Infectados, Aux).
-%
-% generar_mosquitos_cantidad(Sanos, Infectados):-
-%   % Manda con las 4 sepas por default
-%     generar_mosquitos_cantidad(Sanos,Infectados,4).
-%
-% generar_mosquitos_cantidad(0,0,_):-!.
-%
-% generar_mosquitos_cantidad(Sanos,Infectados,Aux):-
-%     random(1,21,Dado),
-%     asignar_sepa(Dado,Sanos,Infectados,Sanos2,Infectados2,Tipo_I),
-%     asignar_area_mosquito(Area),
-%     crea_moyote_auto(Area,0,Tipo_I),
-%     generar_mosquitos(Sanos2,Infectados2,Aux).
-%
-% asignar_sepa(_,X,0,Sanos,0,-1):-
-%     Sanos is X -1.
-%
-% asignar_sepa(1,Sanos,Infectados,Sanos,Infectados2,1):-
-%     Infectados2 is Infectados-1.
-%
-% asignar_sepa(2,Sanos,Infectados,Sanos,Infectados2,2):-
-%     Infectados2 is Infectados-1.
-%
-% asignar_sepa(3,Sanos,Infectados,Sanos,Infectados2,3):-
-%     Infectados2 is Infectados-1.
-%
-% asignar_sepa(4,Sanos,Infectados,Sanos,Infectados2,4):-
-%     Infectados2 is Infectados-1.
-%
-% asignar_sepa(_,Sanos, Infectados, Sanos2, Infectados,-1):-
-%     Sanos2 is Sanos-1.
-%
-%
 
 /*CODIGO PARA CREAR LOS CUERPOS DE AGUA DE LAS AREAS*/
 

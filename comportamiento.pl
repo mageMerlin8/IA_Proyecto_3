@@ -184,6 +184,17 @@ todos_los_hospitalizados(Personas):-
   findall(X,persona_hospitalizada(X),Personas).
 persona_hospitalizada(Persona):-
   persona(Persona,_,_,_,_,true,null).
+personas_muertas_area(Personas,Area):-
+  findall(Z,persona_muerta_area(Z,Area),Personas).
+persona_muerta_area(Persona,Area):-
+  persona(Persona,Area,_,_,_,_,_),
+  \+persona(Persona,_,_,_,_,_,null).
+
+personas_muertas_area_inf(Personas,Area,Inf):-
+  findall(Z,persona_muerta_area_inf(Z,Area,Inf),Personas).
+persona_muerta_area_inf(Persona,Area,Inf):-
+  persona_muerta_area(Persona,Area),
+  infeccion_persona(Persona,Inf,_,_,_,_,_,_),!.
 
 %%%%%%%%%%%
 % MOYOTES %
@@ -367,6 +378,8 @@ ciclar_huevos_dia(Huevos):-
   cant_agua_var(Agua,CantA),CantA>0,!,
   ciclo_actual(Presente),
   eclosiona_huevos(Huevos,Presente).
+ciclar_huevos_dia(_):-
+  maybe(0.7),!.
 ciclar_huevos_dia(Huevos):-
   bulto_huevos(Huevos,_,_,_,_),!,
   destruye_bulto(Huevos).
@@ -383,14 +396,20 @@ ciclo_del_agua_dia:-
   vaciar_charcos_dia,
   llover_dia.
 llover_dia:-
-  tira_moneda(1),!,
+  tira_moneda(0.8),!,
+  numero_aleatorio_entre(1,3,N),NumAreas is floor(N),
+  llover_muchas_areas(NumAreas).
+llover_dia.
+llover_muchas_areas(0):-!.
+llover_muchas_areas(NumAreas):-
   findall(A,area(A,_,_),Areas),length(Areas,L),
   numero_aleatorio_entre(0,L,L1),N is floor(L1),
   nth0(N,Areas,AreaLluvia),
   numero_aleatorio_entre(2,4,L2),N1 is floor(L2),
-  llover_area(AreaLluvia,N1).
-llover_dia.%:-
-  % write('no llovio').
+  llover_area(AreaLluvia,N1),
+  NuevoNum is NumAreas -1,
+  llover_muchas_areas(NuevoNum).
+
 vaciar_charcos_dia:-
   findall(Z,charco_con_agua(Z),Charcos),
   quita_agua_muchos_charcos_dia(Charcos).

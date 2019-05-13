@@ -3,19 +3,19 @@
   <ID>DATABASE</ID>
   <OriginalElement />
   <nodes>
-    <node x="651.0" y="665.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote</node>
-    <node x="0.0" y="370.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona</node>
-    <node x="804.0" y="856.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_moyote</node>
-    <node x="531.0" y="879.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.c_moyote</node>
-    <node x="507.0" y="473.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area</node>
-    <node x="285.0" y="401.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</node>
-    <node x="432.0" y="636.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area</node>
-    <node x="608.0" y="0.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.bulto_huevos</node>
-    <node x="425.0" y="287.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa</node>
-    <node x="911.0" y="186.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.cant_agua_var</node>
-    <node x="817.0" y="488.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas</node>
-    <node x="0.0" y="1020.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
-    <node x="657.0" y="244.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_var</node>
+    <node x="790.0" y="485.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area</node>
+    <node x="750.0" y="845.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_moyote</node>
+    <node x="427.0" y="897.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.c_moyote</node>
+    <node x="480.0" y="415.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area</node>
+    <node x="956.0" y="0.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona</node>
+    <node x="3.3230240549828522" y="679.1134020618556">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
+    <node x="135.0" y="48.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.bulto_huevos</node>
+    <node x="557.0" y="661.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote</node>
+    <node x="226.0" y="305.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_var</node>
+    <node x="0.0" y="391.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.cant_agua_var</node>
+    <node x="339.0" y="576.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas</node>
+    <node x="734.0" y="186.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</node>
+    <node x="500.0" y="177.0">9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa</node>
   </nodes>
   <notes />
   <edges>
@@ -23,11 +23,11 @@
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
-    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_var" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
-    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_var" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
+    <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
@@ -60,33 +60,21 @@
       <point x="0.0" y="0.0" />
     </edge>
     <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
-      <point x="0.2721523433617392" y="-4.992587816153332" />
-      <point x="0.2721523433617392" y="-4.992587816153332" />
+      <point x="0.0" y="-6.632095737966296" />
+      <point x="-7.610601666518724" y="0.0" />
     </edge>
     <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area">
-      <point x="-0.28853570935490325" y="4.991667771840099" />
-      <point x="-0.28853570935491746" y="4.991667771840099" />
+      <point x="8.125266459265191" y="0.0" />
+      <point x="8.125266459265195" y="0.0" />
     </edge>
     <edge source="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona" target="9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona">
       <point x="0.0" y="0.0" />
       <point x="0.0" y="0.0" />
     </edge>
   </edges>
-  <settings layout="Organic" zoom="0.7080630213160334" x="529.5" y="596.5" />
+  <settings layout="Organic" zoom="0.8588351431391905" x="594.0" y="496.5" />
   <SelectedNodes>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.cant_agua_var</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.c_moyote</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.bulto_huevos</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_persona</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area_recreativa</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.moyote</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.persona_area</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.areas_vecinas</node>
     <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.folios</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.area</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.agua_var</node>
-    <node>9c76df07-3845-429f-a084-31b11786aa03.TABLE:main.infeccion_moyote</node>
   </SelectedNodes>
   <Categories>
     <Category>Key columns</Category>

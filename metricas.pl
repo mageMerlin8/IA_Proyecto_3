@@ -267,37 +267,42 @@ metricas_infectadosXarea(X):-
 
 metricas_defuncionesXarea(X):-
   write('REGISTRO DE LAS DEFUNCIONES DEL AREA'), nl,
-  fallecimientos(Lf,_),
-  infectadosXarea(X,1,I1b),
-  infectadosXarea(X,2,I2b),
-  infectadosXarea(X,3,I3b),
-  infectadosXarea(X,4,I4b),
-  % Se intersecta con los fallecimientos de los infectados para tener la poblacion viva
-  ord_intersection(I1b,Lf,I1),
-  ord_intersection(I2b,Lf,I2),
-  ord_intersection(I3b,Lf,I3),
-  ord_intersection(I4b,Lf,I4),
-  /*Ae intersectan todos para conocer restar los folios duplicados de
-  infectados de mas de un serotipo*/
-  ord_union(I1,I2,I12),
-  ord_union(I3,I4,I34),
-  ord_union(I12,I34,ITodos),
-  length(ITodos,NumI),
+  % fallecimientos(Lf,_),
+  % infectadosXarea(X,1,I1b),
+  % infectadosXarea(X,2,I2b),
+  % infectadosXarea(X,3,I3b),
+  % infectadosXarea(X,4,I4b),
+  % % Se intersecta con los fallecimientos de los infectados para tener la poblacion viva
+  % ord_intersection(I1b,Lf,I1),
+  % ord_intersection(I2b,Lf,I2),
+  % ord_intersection(I3b,Lf,I3),
+  % ord_intersection(I4b,Lf,I4),
+  % /*Ae intersectan todos para conocer restar los folios duplicados de
+  % infectados de mas de un serotipo*/
+  % ord_union(I1,I2,I12),
+  % ord_union(I3,I4,I34),
+  % ord_union(I12,I34,ITodos),
+  % length(ITodos,NumI),
+  numero_muertos_area(NumI,X),
+  numero_muertos_area_infeccion(T1,X,1),
+  numero_muertos_area_infeccion(T2,X,2),
+  numero_muertos_area_infeccion(T3,X,3),
+  numero_muertos_area_infeccion(T4,X,4),
+
   write('Fallecidos totales: '), write(NumI), nl,
-  length(I1,T1),
-  length(I2,T2),
-  length(I3,T3),
-  length(I4,T4),
+
   write('   Serotipo 1: '), write(T1), nl,
   write('   Serotipo 2: '), write(T2), nl,
   write('   Serotipo 3: '), write(T3), nl,
   write('   Serotipo 4: '), write(T4), nl,
   write('Nota: una persona puede haber fallecido por mas de una serotipo'),nl.
-
+numero_muertos_area(Num,Area):-
+  personas_muertas_area(Pers,Area),length(Pers,Num).
+numero_muertos_area_infeccion(Num,Area,Inf):-
+  personas_muertas_area_inf(Pers,Area,Inf),length(Pers,Num).
 numero_muertos(Num):-
   findall(X,persona_muerta(X),Muertas),
   length(Muertas,Num).
-
 reporte_diario:-
   findall(Folio,persona(Folio,_,_,_,_,_,null),P),
   length(P,TP),

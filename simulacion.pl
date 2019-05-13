@@ -95,7 +95,7 @@ logistic_personas_concientes(Dias,P_personas_concientes):-
 quita_charcos_por_panico:-
   p_personas_concientes(P_cons),
   %hasta 20-40% de los charcos en un dia
-  random(0,2.4,R),P is R * P_cons,
+  random(0,0.5,R),P is R * P_cons,
   findall(C,agua_var(C,_,_,_),Charcos),
   length(Charcos,Lch),NumAQuitar is floor(Lch * P),
   random_permutation(Charcos,Charcos_permute),
@@ -143,15 +143,15 @@ ciclar_mundo:-
   ciclar_todos_los_moyotes(Hora),
   ciclar_todas_las_personas(Dia,Hora),
   avanza_el_tiempo.
-ciclar_mundo_muchos_dias(0):-!.
-ciclar_mundo_muchos_dias(N):-
-  ciclar_mundo_dia,
+ciclar_mundo_muchos_dias(0,_):-!.
+ciclar_mundo_muchos_dias(N,Sim):-
+  ciclar_mundo_dia(Sim),
   M is N-1,
-  ciclar_mundo_muchos_dias(M).
-ciclar_mundo_dia:-
+  ciclar_mundo_muchos_dias(M,Sim).
+ciclar_mundo_dia(Sim):-
   avanza_embarazamiento_de_moyotes_dia,
-  ciclar_todos_los_huevos_dia,
   ciclo_del_agua_dia,
+  ciclar_todos_los_huevos_dia,
   hospitalizar_personas_dia(_NumHospitalizados),
   matar_personas_dia,
   mata_moyotes_por_panico,
@@ -164,7 +164,7 @@ ciclar_mundo_dia:-
   p_personas_concientes(Panic),
 
   % tell(user),
-  crea_nombre_archivo(Dia,1,NomFile),
+  crea_nombre_archivo(Dia,Sim,NomFile),
   tell(NomFile),
   write('Dia #'),writeln(Dia),
   writeln('------------------'),
@@ -208,7 +208,7 @@ hospitalizar_personas_dia(NumAHospitalizar):-
   separar_enfermos_hosp(Enfermitos,_,NoHosp),
   length(NoHosp,NumEnf),
   % porcentaje que va al hospital:
-  numero_aleatorio_entre(0.1,0.35,P1),
+  numero_aleatorio_entre(0.1,0.15,P1),
   % P1 is 0.5,
   NumAHospitalizar is floor(NumEnf * P1),
   random_permutation(NoHosp,Enfermitos_permutados),
@@ -219,7 +219,7 @@ hospitalizar_personas_dia(NumAHospitalizar):-
   separar_enfermos_hosp(Enfermitos,_,NoHosp),
   length(NoHosp,NumEnf),
   % porcentaje que va al hospital:
-  numero_aleatorio_entre(0.80,0.90,P1),
+  numero_aleatorio_entre(0.75,0.9,P1),
   % * X por que solo X% de la gente sabe de la enfermedad
   NumAHospitalizar is floor(min(0.4,P1 * X) * NumEnf ),
   random_permutation(NoHosp,Enfermitos_permutados),
