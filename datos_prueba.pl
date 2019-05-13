@@ -63,10 +63,3 @@ crea_moyotes_en_lugares_aleatorios(N,P):-
 crea_mundo_prueba:-
   crea_areas,
   crea_agentes.
-
-% main:-
-%   guitracer,
-%   spy(crea_moyotes_en_lugares_aleatorios/2),
-%   trace,
-%   crea_mundo.
-% :-main.

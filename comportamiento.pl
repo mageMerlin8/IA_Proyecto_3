@@ -465,38 +465,3 @@ crea_charcos_por_lluvia(Area,N):-
   random(1,6,P1),P_Vaciado is P1/10.0,
   crea_agua_var(Area,CantH,P_Vaciado),
   M is N-1,crea_charcos_por_lluvia(Area,M).
-
-
-
-
-  hora(0).
-  hora(1).
-  hora(2).
-  hora(3).
-  hora(4).
-  hora(5).
-  hora(6).
-  hora(7).
-  hora(8).
-  hora(9).
-  hora(10).
-  hora(11).
-  hora(12).
-  hora(13).
-  hora(14).
-  hora(15).
-  hora(16).
-  hora(17).
-  hora(18).
-  hora(19).
-  hora(20).
-  hora(21).
-  hora(22).
-  hora(23).
-  dia(0).
-  dia(1).
-  dia(2).
-  dia(3).
-  dia(4).
-  dia(5).
-  dia(6).

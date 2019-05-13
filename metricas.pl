@@ -99,72 +99,6 @@ metricas_personasXsepa:-
   write('   Con serotipo 4: '), write(C), nl,
   write('Nota: una persona puede tener mas de 1 serotipo.'),nl.
 
-% No se dividio en varios metodos para evitar contar varias veces las mismas listas
-% metricas_fallecidos:-
-%   fallecimientos(Lf,F),
-%   F>0,!,
-%   write('Total de fallecimientos: '), write(F), nl,
-%   % metricas de fallecimientos de una unica sepa
-%   findall(Folio,infeccion_persona(Folio,1,_,_,_,_,_,_),Ls1),
-%   findall(Folio2,infeccion_persona(Folio2,2,_,_,_,_,_,_),Ls2),
-%   findall(Folio3,infeccion_persona(Folio3,3,_,_,_,_,_,_),Ls3),
-%   findall(Folio4,infeccion_persona(Folio4,4,_,_,_,_,_,_),Ls4),
-%   % intersectando los fallecidos con cada sepa para obtener las poblaciones
-%   ord_intersect(Lf,Ls1,Lfs1),
-%   ord_intersect(Lf,Ls2,Lfs2),
-%   ord_intersect(Lf,Ls3,Lfs3),
-%   ord_intersect(Lf,Ls4,Lfs4),
-%   % se calculan los tamaños de cada poblacion
-%   length(Lfs1,U),
-%   length(Lfs2,D),
-%   length(Lfs3,T),
-%   length(Lfs4,C),
-%   mayorClave([1,2,3,4],[U,D,T,C],S,N),
-%   P is N * 100 / F,
-%   write('Serotipo con mayor mortandad: '), write(S),nl,
-%   write('Porcentaje de responsabilidad: '), write(P), nl,
-%   % ahora se calculan las metricas de combiancion de 2 sepas
-%   ord_intersect(Lfs1,Lfs2,L12),
-%   ord_intersect(Lfs1,Lfs3,L13),
-%   ord_intersect(Lfs1,Lfs4,L14),
-%   ord_intersect(Lfs2,Lfs3,L23),
-%   ord_intersect(Lfs2,Lfs4,L24),
-%   ord_intersect(Lfs3,Lfs4,L34),
-%   % obtenemos el tamaño de cada combinacion
-%   length(L12,UD),
-%   length(L13,UT),
-%   length(L14,UC),
-%   length(L23,DT),
-%   length(L24,DC),
-%   length(L34,TC),
-%   mayorClave([[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]],[UD,UT,UC,DT,DC,TC],[S1,S2],C),
-%   PC is C * 100.0 / F,
-%   write('Combinación par con mayor mortandad: Serotipo'), write(S1), write(' y Serotipo'), write(S2),nl,
-%   write('Porcentaje de responsabilidad: '), write(PC),nl,
-%   % metricas para la mortandad de 3 sepas
-%   % intersectamos una combinacion con el conjunto faltante para hacer triadas
-%   ord_intersect(Lfs1,L23,L123),
-%   ord_intersect(Lfs1,L34,L134),
-%   ord_intersect(Lfs1,L24,L124),
-%   ord_intersect(Lfs2,L34,L234),
-%   length(L123,UDT),
-%   length(L134,UTC),
-%   length(L124,UDC),
-%   length(L234,DTC),
-%   mayorClave([[1,2,3],[1,3,4],[1,2,4],[2,3,4]],[UDT,UTC,UDC,DTC],[A1|B],T),
-%   abrirPareja(B,A2,A3),
-%   PT is T * 100 / F,
-%   write('Tercia de serotipos con mayor mortandad: '), write(A1), write(', '),
-%   write(A2), write(' y '), write(A3),nl,
-%   write('Porcentaje de responsabilidad: '), write(PT),nl,
-%   /*metricas para la mortandad de las 4 sepas
-%   dado que ya se cuentan con intersecciones pares, se intersecta una combinacion
-%   que incluya los 4 conjuntios*/
-%   ord_intersect(L12,L34,Ltot),
-%   length(Ltot,UDTC),
-%   Ptot is UDTC * 100 / F,
-%   write('Porcentaje de fallecimientos por los 4 serotipos: '), write(Ptot),nl.
-%   % quiza valga agregar el area con mayor numero de fallecimientos
 metricas_fallecidos:-
   personas_muertas(Ls),length(Ls,F),
   write('Total de fallecimientos: '), write(F), nl.
@@ -267,22 +201,6 @@ metricas_infectadosXarea(X):-
 
 metricas_defuncionesXarea(X):-
   write('REGISTRO DE LAS DEFUNCIONES DEL AREA'), nl,
-  % fallecimientos(Lf,_),
-  % infectadosXarea(X,1,I1b),
-  % infectadosXarea(X,2,I2b),
-  % infectadosXarea(X,3,I3b),
-  % infectadosXarea(X,4,I4b),
-  % % Se intersecta con los fallecimientos de los infectados para tener la poblacion viva
-  % ord_intersection(I1b,Lf,I1),
-  % ord_intersection(I2b,Lf,I2),
-  % ord_intersection(I3b,Lf,I3),
-  % ord_intersection(I4b,Lf,I4),
-  % /*Ae intersectan todos para conocer restar los folios duplicados de
-  % infectados de mas de un serotipo*/
-  % ord_union(I1,I2,I12),
-  % ord_union(I3,I4,I34),
-  % ord_union(I12,I34,ITodos),
-  % length(ITodos,NumI),
   numero_muertos_area(NumI,X),
   numero_muertos_area_infeccion(T1,X,1),
   numero_muertos_area_infeccion(T2,X,2),
