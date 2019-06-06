@@ -1,5 +1,7 @@
-*/.idea
+/.idea
 *.sqlite
 *.uml
 */sim/*_*
 sim/*
+*/.idea
+site/

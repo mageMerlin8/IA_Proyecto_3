@@ -1,6 +1,6 @@
 # Inteligencia Artificial Proyecto Final
 
-Se realizó un sistema multi agente para modelar la propagación del dengue en Medellín, Colombia. La modelación de agentes y el entorno se realizó en SwiProlog por requerimientos de la clase. Se utilizó python para analizar la información generada. El documento escrito entregado para la materia se puede 
+Se realizó un sistema multi agente para modelar la propagación del dengue en Medellín, Colombia. La modelación de agentes y el entorno se realizó en SwiProlog por requerimientos de la clase. Se utilizó python para analizar la información generada. El documento escrito entregado para la materia se puede encontrar [aqui](https://github.com/mageMerlin8/IA_Proyecto_3/blob/master/docs/modelado_multiagente.pdf).
 
 ## Módulos del Sistema de Simulación
 
