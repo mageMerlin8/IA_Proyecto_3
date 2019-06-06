@@ -1,0 +1,84 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "Inteligencia Artificial Proyecto Final\n\n\nSe realiz\u00f3 un sistema multi agente para modelar la propagaci\u00f3n del dengue en Medell\u00edn, Colombia. La modelaci\u00f3n de agentes y el entorno se realiz\u00f3 en SwiProlog por requerimientos de la clase. Se utiliz\u00f3 python para analizar la informaci\u00f3n generada. El documento escrito entregado para la materia se puede \n\n\nM\u00f3dulos del Sistema de Simulaci\u00f3n\n\n\n\n\nagentes.pl\n - Define la creaci\u00f3n y desctrucci\u00f3n de todos los agentes dentro de la base de datos.\n\n\ncomportamiento.p\u013a\n - Define el comportamiento de los agentes.\n\n\ndatos_prueba.pl\n - Genera un entorno de prueba (con agentes) suficiente para correr las pruebas.\n\n\ngeneradores.pl\n - Funciona muy parecido al m\u00f3dulo datos_prueba pero genera datos modelando Medell\u00edn.\n\n\nmetricas.pl\n - M\u00f3dulo encargado de imprimir m\u00e9tricas acerca del estado actual de la simulacion.\n\n\nsimulacion.pl\n - M\u00f3dulo encargado de correr la simulacion.",
+            "title": "Home"
+        },
+        {
+            "location": "/#inteligencia-artificial-proyecto-final",
+            "text": "Se realiz\u00f3 un sistema multi agente para modelar la propagaci\u00f3n del dengue en Medell\u00edn, Colombia. La modelaci\u00f3n de agentes y el entorno se realiz\u00f3 en SwiProlog por requerimientos de la clase. Se utiliz\u00f3 python para analizar la informaci\u00f3n generada. El documento escrito entregado para la materia se puede",
+            "title": "Inteligencia Artificial Proyecto Final"
+        },
+        {
+            "location": "/#modulos-del-sistema-de-simulacion",
+            "text": "agentes.pl  - Define la creaci\u00f3n y desctrucci\u00f3n de todos los agentes dentro de la base de datos.  comportamiento.p\u013a  - Define el comportamiento de los agentes.  datos_prueba.pl  - Genera un entorno de prueba (con agentes) suficiente para correr las pruebas.  generadores.pl  - Funciona muy parecido al m\u00f3dulo datos_prueba pero genera datos modelando Medell\u00edn.  metricas.pl  - M\u00f3dulo encargado de imprimir m\u00e9tricas acerca del estado actual de la simulacion.  simulacion.pl  - M\u00f3dulo encargado de correr la simulacion.",
+            "title": "M\u00f3dulos del Sistema de Simulaci\u00f3n"
+        },
+        {
+            "location": "/about/",
+            "text": "Ipsas mole canitiem\n\n\nEt meo nulla\n\n\nLorem markdownum inpubesque adspicit numen dilaniant, suo tandem confessa\nvidisse \nlitora\n, titulum. Caput pondus futuri? Ille ultimus, plebs in interea\ndolore fuerant sparsas post Herse.\n\n\nNe illa, forabilis natura: premis et culpa Gorgonis \ncollo\n ira\nperterrita decimo. Ammon posse invidit suo sub moenia quidem, si illi. Et alter:\nbene: silent quam, dapibus longaeva quam toto omnes nil inexpugnabile aeris.\nNovo imas toro cum rauco aram, se, in factura causamque qui.\n\n\nVoluit rex precor coepta ferarum Haemoniosque laceraret\n\n\nAether rigent ferventia \nliquet\n habuit repetit Phoebo Achillea\net inrita. Hanc praedaque, deae, pro ferventibus doctas abiit exsiluit lapis\nsupereminet.\n\n\nVestrum maxime\n\n\nIndetonsusque Bona ait! Tibi est, clamant femina! Erit quod me partus opaca\nMinervae, mori adiit successibus aethera.\n\n\nCarminaque quaere parvo\n\n\nO quidque metuit succinctae nostra, \nordine\n portusque rigent, cape cum, venti,\ncura guttura. Tenendae potitus matrem: et nam? Puer\n\nuna\n Meropis denique Pario, \nsubito\n\nconditus, feros actae poenamque Nereides currant restagnantis. Increvit\nredituram gemit lucoque perque tellus circulus, \nfata esse\n narrat. Natura\nsperabam rapi.\n\n\n\n\nA tu inter\n\n\nEcce temeraria ultima carmine hamo postquam te\n\n\nAdlevat dolor aut nemus defendite facias et\n\n\nCarmine Baucis dedecet tibi\n\n\nFronte Tyron Latona umbrarum\n\n\n\n\nPoscor ligno cupidisque quem petisse quibus ut\n\n\nCunis dissaepserat praemia mihi versata, turbine verum si \ncalores pars est\n\nlapides \nfinxit paternam belua\n. Si superesse iniectis Styga!\nAttulerat remoliri pilas ecce saxum inpensius fine data, ad. Pervigil videns et\npateres numina saepe Amoris temerarius potitur Argolicam exstantem mariti.\n\n\nSalmacis \ntalaria incubuit\n quisquis, et fatis ferarum mare in iuvenalis Clytie\nclamat. Ut dulcia Caeneus virginea sicut, regno me avium iam epulis pondere\nlocoque: mecum, citra florentemque agebat nostris. Cognovit procul concidere\nsumpserat nunc, meas fugit \ngladium videtur\n!\n\n\nHomines aperto ac gerebat acceptum quod uni, At lupis. Venit conceperat dicebat,\nsagittas oppositas furoris pectus et solet pennas revulsit solae, crescitque\nerat totidemque minatur nurus. De quoque tamen paulatim quoque caelo, \nramos\n!\nLigno quae sub undis Argolis tangit, iam tauri, solverat.",
+            "title": "About"
+        },
+        {
+            "location": "/about/#ipsas-mole-canitiem",
+            "text": "",
+            "title": "Ipsas mole canitiem"
+        },
+        {
+            "location": "/about/#et-meo-nulla",
+            "text": "Lorem markdownum inpubesque adspicit numen dilaniant, suo tandem confessa\nvidisse  litora , titulum. Caput pondus futuri? Ille ultimus, plebs in interea\ndolore fuerant sparsas post Herse.  Ne illa, forabilis natura: premis et culpa Gorgonis  collo  ira\nperterrita decimo. Ammon posse invidit suo sub moenia quidem, si illi. Et alter:\nbene: silent quam, dapibus longaeva quam toto omnes nil inexpugnabile aeris.\nNovo imas toro cum rauco aram, se, in factura causamque qui.",
+            "title": "Et meo nulla"
+        },
+        {
+            "location": "/about/#voluit-rex-precor-coepta-ferarum-haemoniosque-laceraret",
+            "text": "Aether rigent ferventia  liquet  habuit repetit Phoebo Achillea\net inrita. Hanc praedaque, deae, pro ferventibus doctas abiit exsiluit lapis\nsupereminet.",
+            "title": "Voluit rex precor coepta ferarum Haemoniosque laceraret"
+        },
+        {
+            "location": "/about/#vestrum-maxime",
+            "text": "Indetonsusque Bona ait! Tibi est, clamant femina! Erit quod me partus opaca\nMinervae, mori adiit successibus aethera.",
+            "title": "Vestrum maxime"
+        },
+        {
+            "location": "/about/#carminaque-quaere-parvo",
+            "text": "O quidque metuit succinctae nostra,  ordine  portusque rigent, cape cum, venti,\ncura guttura. Tenendae potitus matrem: et nam? Puer una  Meropis denique Pario,  subito \nconditus, feros actae poenamque Nereides currant restagnantis. Increvit\nredituram gemit lucoque perque tellus circulus,  fata esse  narrat. Natura\nsperabam rapi.   A tu inter  Ecce temeraria ultima carmine hamo postquam te  Adlevat dolor aut nemus defendite facias et  Carmine Baucis dedecet tibi  Fronte Tyron Latona umbrarum",
+            "title": "Carminaque quaere parvo"
+        },
+        {
+            "location": "/about/#poscor-ligno-cupidisque-quem-petisse-quibus-ut",
+            "text": "Cunis dissaepserat praemia mihi versata, turbine verum si  calores pars est \nlapides  finxit paternam belua . Si superesse iniectis Styga!\nAttulerat remoliri pilas ecce saxum inpensius fine data, ad. Pervigil videns et\npateres numina saepe Amoris temerarius potitur Argolicam exstantem mariti.  Salmacis  talaria incubuit  quisquis, et fatis ferarum mare in iuvenalis Clytie\nclamat. Ut dulcia Caeneus virginea sicut, regno me avium iam epulis pondere\nlocoque: mecum, citra florentemque agebat nostris. Cognovit procul concidere\nsumpserat nunc, meas fugit  gladium videtur !  Homines aperto ac gerebat acceptum quod uni, At lupis. Venit conceperat dicebat,\nsagittas oppositas furoris pectus et solet pennas revulsit solae, crescitque\nerat totidemque minatur nurus. De quoque tamen paulatim quoque caelo,  ramos !\nLigno quae sub undis Argolis tangit, iam tauri, solverat.",
+            "title": "Poscor ligno cupidisque quem petisse quibus ut"
+        },
+        {
+            "location": "/agentes/",
+            "text": "",
+            "title": "Agentes"
+        },
+        {
+            "location": "/comportamiento/",
+            "text": "",
+            "title": "Comportamiento"
+        },
+        {
+            "location": "/datos_prueba/",
+            "text": "",
+            "title": "Datos prueba"
+        },
+        {
+            "location": "/generadores/",
+            "text": "",
+            "title": "Generadores"
+        },
+        {
+            "location": "/metricas/",
+            "text": "",
+            "title": "Metricas"
+        },
+        {
+            "location": "/simulacion/",
+            "text": "",
+            "title": "Simulacion"
+        }
+    ]
+}

@@ -1,0 +1,11 @@
+site_name: Documentación IA Proyecto 3
+nav:
+  - inico: index.md
+  - agentes: agetes.md
+  - comportamiento: comportamiento.md
+  - datos_prueba: datos_prueba.md
+  - generadores: generadores.md
+  - metricas: metricas.md
+  - simulacion: simulacion.md
+  - About: about.md
+theme: readthedocs
