@@ -53,7 +53,7 @@ La información de sus parámetros es del siguiente orden:
 
 ## Moyote
 
-> Nota: relevante Moyote es otra palabra para mosquito.
+> Nota: Moyote es otra palabra para mosquito.
 
 
 [Moyote](diag_moyote.png) es uno de los principales agentes. Moyote modela el comportamiento básico de los mosquitos: estos viven en un área toda su vida, comen durante el dia y ponen huevos cuando llenan su tanque.
